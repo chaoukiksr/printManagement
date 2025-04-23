@@ -1,0 +1,82 @@
+button {
+  cursor: pointer;
+}
+
+.btn {
+  background-color: var(--primary);
+  color: #fff;
+  border-radius: 12px;
+  padding: 9px 30px;
+}
+
+.btn-outline {
+  border: 2px solid var(--primary);
+  background-color: #fff;
+  padding: 9px 30px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.field {
+  margin-top: 13px;
+  margin-bottom: 6px;
+}
+.field .input {
+  border: 1px solid #cfd7db;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+}
+.field .input input {
+  padding-left: 5px;
+  outline: none;
+  border: none;
+  flex-grow: 1;
+}
+
+.sidebar {
+  /* height: calc(100vh - 90px); */
+  background-image: url("/assets/motif.png");
+  background-position: center bottom;
+  background-size: 500px;
+  background-color: #fff;
+}
+
+table td,
+table th {
+  text-align: left;
+  padding: 10px;
+}
+
+/* request status */
+
+.completed,
+.pending,
+.refused,
+.approved,
+.all {
+  width: fit-content;
+  padding: 8px 15px;
+  border-radius: 12px;
+}
+.all {
+  background-color: #c4eeec;
+  color: #3f5d6d;
+}
+.completed {
+  background-color: #d5f7e1;
+  color: #34784d;
+}
+.approved {
+  background-color: #abefc3;
+  color: #23452f;
+}
+.pending {
+  background-color: #b9d6fd;
+  color: #435f86;
+}
+.refused {
+  background-color: #f1bfc9;
+  color: #9a0422;
+}

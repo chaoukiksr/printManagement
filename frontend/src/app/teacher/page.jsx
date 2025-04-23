@@ -1,0 +1,61 @@
+"use client";
+import Navbar from "@/components/dashboard/Navbar";
+import ReqTable from "@/components/dashboard/ReqTable";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import React, { useState } from "react";
+
+export default function page() {
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+  return (
+    <div className="">
+      <Navbar />
+
+      <div className="container m-auto mt-[60px]">
+        <h3 className="text-3xl font-bold">Requests</h3>
+        <div className="mt-5 flex items-center gap-3 justify-between">
+          <div
+            className="filter-card flex flex-wrap gap-3 items-center bg-white p-2 px-9 shadow rounded-lg"
+            style={{ width: "fit-content" }}
+          >
+            <div
+              className="all cursor-pointer"
+              onClick={() => setSelectedStatus("all")}
+            >
+              All
+            </div>
+            <div
+              className="completed cursor-pointer"
+              onClick={() => setSelectedStatus("completed")}
+            >
+              Completed
+            </div>
+            <div
+              className="approved cursor-pointer"
+              onClick={() => setSelectedStatus("approved")}
+            >
+              Approved
+            </div>
+            <div
+              className="pending cursor-pointer"
+              onClick={() => setSelectedStatus("pending")}
+            >
+              Pending
+            </div>
+            <div
+              className="refused cursor-pointer"
+              onClick={() => setSelectedStatus("refused")}
+            >
+              Refused
+            </div>
+          </div>
+          <button className="btn flex items-center gap-3">
+            <PlusIcon className="size-6" />
+            <span>New Request</span>
+          </button>
+        </div>
+        <ReqTable selectedStatus={selectedStatus}/>
+      </div>
+    </div>
+  );
+}
