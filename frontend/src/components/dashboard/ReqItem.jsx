@@ -1,18 +1,28 @@
-'use client';
-import { AdjustmentsVerticalIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+"use client";
+import {
+  AdjustmentsVerticalIcon,
+  DocumentIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useSelector } from "react-redux";
 
 export default function ReqItem({ item }) {
- const pathname = usePathname();
- const router = useRouter();
-
+  const { role } = useSelector((state) => state.auth);
+  const pathname = usePathname();
+  const router = useRouter();
 
   return (
-    <tr className="bg-white border-t border-gray-400"
-    onClick={() => {router.push(`${pathname}?viewReq=${item._id}`)}}
-    style={{cursor : 'url(/view.svg) , pointer'}}>
+    <tr
+      className="bg-white border-t border-gray-400"
+      onClick={() => {
+        if (role === "admin") return;
+        router.push(`${pathname}?viewReq=${item._id}`);
+      }}
+      style={{ cursor: role !== "admin" && "url(/view.svg) , pointer" }}
+    >
       <td>
         <div className="account flex items-center gap-2">
           <div className="photo">
@@ -38,9 +48,11 @@ export default function ReqItem({ item }) {
           <li></li> {item.status.replace(/_/g, " ")}
         </div>
       </td>
-      <td>
-        <PencilSquareIcon className="size-6 cursor-pointer"/>
-      </td>
+      {role !== "admin" && (
+        <td>
+          <AdjustmentsVerticalIcon className="size-7 cursor-pointer circle" />
+        </td>
+      )}
     </tr>
   );
 }

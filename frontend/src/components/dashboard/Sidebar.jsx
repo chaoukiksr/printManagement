@@ -16,7 +16,7 @@ export default function Sidebar() {
     <div className={`sidebar  m-4 p-5 py-5 lg:w-[171px] w-[72px] xs:[171px] rounded-md shadow md:block hidden h-full`}>
       <div className="content flex flex-col justify-between h-full ">
         <div className="navigations">
-          <Link href={"/admin"}>
+          <Link href={"/admin"} prefetch={true}>
             <div
               className={`flex items-center gap-3 my-4 ${
                 pathname !== "/admin" && "text-gray-400"
@@ -26,7 +26,7 @@ export default function Sidebar() {
               <span className="font-bold lg:block md:hidden sm:block">Home</span>
             </div>
           </Link>
-          <Link href={"/admin/requests"}>
+          <Link href={"/admin/requests"} prefetch={true}>
             <div
               className={`flex items-center gap-3 my-4 ${
                 pathname !== "/admin/requests" && "text-gray-400"
@@ -36,7 +36,7 @@ export default function Sidebar() {
               <span className="font-bold lg:block md:hidden sm:block">Request</span>
             </div>
           </Link>
-          <Link href={"#"}>
+          <Link href={"#"} prefetch={true}>
             <div
               className={`flex items-center gap-3 my-4 ${
                 pathname !== "/admin/statistics" && "text-gray-400"
@@ -46,7 +46,7 @@ export default function Sidebar() {
               <span className="font-bold lg:block md:hidden sm:block">Statistics</span>
             </div>
           </Link>
-          <Link href={"/admin/accounts"}>
+          <Link href={"/admin/accounts"} prefetch={true}>
             <div
               className={`flex items-center gap-3 my-4 ${
                 pathname !== "/admin/accounts" && "text-gray-400"

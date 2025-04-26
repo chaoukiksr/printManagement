@@ -113,3 +113,67 @@ export const requests = [
     status: "wait_for_printer",
   },
 ];
+
+
+export const teachers = [
+  {
+    _id: 0,
+    name: "belkacemi ahmed",
+    email: "belkacemi@gmail.com",
+    phone: "",
+    department: "Génie Logiciel",
+    role: "teacher",
+  },
+  {
+    _id: 1,
+    name: "nadia benali",
+    email: "nadia@gmail.com",
+    phone: "",
+    department: "Génie Logiciel",
+    role: "teacher",
+  },
+  {
+    _id: 2,
+    name: "amine kaci",
+    email: "amine@gmail.com",
+    phone: "",
+    department: "Génie Logiciel",
+    role: "teacher",
+  },
+  {
+    _id: 3,
+    name: "sara amrani",
+    email: "sara@gmail.com",
+    phone: "",
+    department: "Génie Logiciel",
+    role: "teacher",
+  },
+];
+
+export const departments = [
+  {
+    _id: 0,
+    name: "Génie Logiciel",
+    leader: "belkacemi ahmed",
+    leaderEmail : "belkacemi@gmail.com"
+  },
+  {
+    _id: 1,
+    name: "Génie Electrique",
+    leader: "nadia benali",
+    leaderEmail : "nadia@gmail.com"
+  },
+  {
+    _id: 2,
+    name: "Génie Mécanique",
+    leader : "amine kaci",
+    leaderEmail : "amine@gmail.com" 
+  },
+];
+export const admins = [
+
+]
+
+export const printers = [
+  
+]

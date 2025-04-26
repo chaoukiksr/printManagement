@@ -1,3 +1,4 @@
+import Loader from "@/components/dashboard/Loader";
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import ViewReqPopup from "@/components/dashboard/ViewReqPopup";
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
           <ViewReqPopup />
         </main>
       </div>
+      <Loader />
     </div>
   );
 }

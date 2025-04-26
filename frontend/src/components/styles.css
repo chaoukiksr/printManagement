@@ -119,3 +119,9 @@ table th {
   max-height: 90vh;
   overflow-y: auto;
 }
+
+.circle {
+  border: 2px solid var(--primary);
+  border-radius: 30%;
+  padding: 2px;
+}

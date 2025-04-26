@@ -5,7 +5,7 @@ import { requests } from "@/testdata";
 import { useDispatch, useSelector } from "react-redux";
 import { getNotification } from "@/store/notification/notificationHandler";
 import { getRequests } from "@/store/request/requestHandler";
-import { DocumentIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { AdjustmentsVerticalIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function ReqTable({ selectedStatus }) {
@@ -58,13 +58,18 @@ export default function ReqTable({ selectedStatus }) {
       {/* table mobile version */}
       <div className="w-full p-3 md:hidden bg-white shadow-xl rounded-lg">
         {filtredReq.map((item) => (
-          <div key={item._id} className="pt-3 flex flex-col gap-3 relative"
-          onClick={() => {router.push(`${pathname}?viewReq=${item._id}`)}}
-          style={{cursor : 'url(/view.svg) , pointer'}}
+          <div
+            key={item._id}
+            className="pt-3 flex flex-col gap-3 relative"
+            onClick={() => {
+              if (role === "admin") return;
+              router.push(`${pathname}?viewReq=${item._id}`);
+            }}
+            style={{ cursor: role !== "admin" && "url(/view.svg) , pointer" }}
           >
             {role === "department" && (
               <div className="absolute right-[2%]">
-                <PencilSquareIcon className="size-6 cursor-pointer" />
+                <AdjustmentsVerticalIcon className="size-7 cursor-pointer circle" />
               </div>
             )}
             <div className="flex items-center px-4">
