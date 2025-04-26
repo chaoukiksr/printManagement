@@ -1,9 +1,18 @@
+'use client';
 import { AdjustmentsVerticalIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function ReqItem({ item }) {
+ const pathname = usePathname();
+ const router = useRouter();
+
+
   return (
-    <tr className="bg-white border-t border-gray-400 ">
+    <tr className="bg-white border-t border-gray-400"
+    onClick={() => {router.push(`${pathname}?viewReq=${item._id}`)}}
+    style={{cursor : 'url(/view.svg) , pointer'}}>
       <td>
         <div className="account flex items-center gap-2">
           <div className="photo">

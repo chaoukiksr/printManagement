@@ -5,21 +5,21 @@ import { stopScroll } from "@/utils/stopScroll";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useRef } from "react";
-
+import { createPortal } from "react-dom";
 
 export default function DepCreation({ hidePopup, status }) {
-    const popupRef = useRef(null);
-    useOutsideClick(popupRef, hidePopup);
+  const popupRef = useRef(null);
+  useOutsideClick(popupRef, hidePopup);
 
-    // Function to stop scrolling when the popup is open
+  // Function to stop scrolling when the popup is open
   useEffect(() => {
     stopScroll(status);
+
     return () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("scroll", stopScroll);
     };
-  }, []);
-
+  }, [status]);
 
   const [formData, setFormData] = useState({
     depName: "",
@@ -45,51 +45,56 @@ export default function DepCreation({ hidePopup, status }) {
     }));
   };
 
-  if(!status) return null;
-  return (
-    <div className={`popup`}>
-      <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
-        <h3 className="text-xl font-bold text-center mb-7">
-          Department creation
-        </h3>
-        <form onSubmit={handleSubmit}>
-          <div className="field">   
-            <label htmlFor="depName">Department name</label>
-            <div className="input">
-              <input
-                type="text"
-                id="depName"
-                placeholder="Enter your department name"
-                value={formData.depName}
-                onChange={handleInputChange}
-                required
-              />
+  if (!status) return null;
+  return(
+    <div className={`popup ananhawes3lik`}>
+        <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
+          <h3 className="text-xl font-bold text-center mb-7">
+            Department creation
+          </h3>
+          <form onSubmit={handleSubmit}>
+            <div className="field">
+              <label htmlFor="depName">Department name</label>
+              <div className="input">
+                <input
+                  type="text"
+                  id="depName"
+                  placeholder="Enter your department name"
+                  value={formData.depName}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
             </div>
-          </div>
-          <div className="field">
-            <label htmlFor="depLeaderEmail">Department - Leader admin</label>
-            <div className="input">
-              <input
-                type="email"
-                id="depLeaderEmail"
-                placeholder="Enter your department - leader admin"
-                value={formData.depLeaderEmail}
-                onChange={handleInputChange}
-                required
-              />
+            <div className="field">
+              <label htmlFor="depLeaderEmail">Department - Leader admin</label>
+              <div className="input">
+                <input
+                  type="email"
+                  id="depLeaderEmail"
+                  placeholder="Enter your department - leader admin"
+                  value={formData.depLeaderEmail}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <p className="text-gray-400" style={{ fontSize: "14px" }}>
+                We will send an invitation to this email so the leader can
+                create the department account.
+              </p>
             </div>
-            <p className="text-gray-400" style={{ fontSize: "14px" }}>
-              We will send an invitation to this email so the leader can create
-              the department account.
-            </p>
-          </div>
 
-          <div className="cta flex w-full items-center gap-3 mt-4 flex-wrap-reverse">
-            <button className="btn-gray flex-grow-1 w-50" onClick={()=> hidePopup()}>Cancel</button>
-            <button className="btn flex-grow-1">Create the department</button>
-          </div>
-        </form>
-      </div>
+            <div className="cta flex w-full items-center gap-3 mt-4 flex-wrap-reverse">
+              <button
+                className="btn-gray flex-grow-1 w-50"
+                onClick={() => hidePopup()}
+              >
+                Cancel
+              </button>
+              <button className="btn flex-grow-1">Create the department</button>
+            </div>
+          </form>
+        </div>
     </div>
   );
 }

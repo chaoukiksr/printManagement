@@ -57,21 +57,22 @@
   }
 } */
 
-body {
-  background-image: linear-gradient(var(--background), var(--white)),
-    url("/assets/motif.png"), url("/assets/motif.png"), url("/assets/motif.png"),
-    url("/assets/motif.png");
 
+body {
+   background-image: linear-gradient(var(--background), var(--white)),
+  url("/assets/motif.png"), url("/assets/motif.png"), url("/assets/motif.png"),
+  url("/assets/motif.png");
+  /*
+  backdrop-filter: blur(2px);
+  */  
   background-size: 100%, 173px, 241px, 173px, 173px;
 
   background-position: -5% -5%, 105% -3%, 20% 20%, 80% 25%;
-
-  background-repeat: no-repeat; /* Prevent motifs from repeating */
+  
+  background-repeat: no-repeat; 
   background-blend-mode: soft-light;
-  backdrop-filter: blur(2px);
-
+  font-family: var(--font-cairo), sans-serif; 
   color: var(--primary);
-  font-family: var(--font-cairo), sans-serif;
 
   overflow-x: hidden !important;
 }

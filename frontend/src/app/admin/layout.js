@@ -1,5 +1,6 @@
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
+import ViewReqPopup from "@/components/dashboard/ViewReqPopup";
 
 export const metadata = {
   title: "Print Administation",
@@ -9,13 +10,19 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <div className="min-h-screen">
-    <Navbar />
-    <div className="flex flex-1">
-      <div className="sticky top-[56px] z-40 " style={{ height :"calc(100vh - 90px)"}}>
-        <Sidebar />
+      <Navbar />
+      <div className="flex">
+        <div
+          className="sticky top-[56px] z-40 "
+          style={{ height: "calc(100vh - 90px)" }}
+        >
+          <Sidebar />
+        </div>
+        <main className="flex-1">
+          {children}
+          <ViewReqPopup />
+        </main>
       </div>
-      <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
-  </div>
   );
 }

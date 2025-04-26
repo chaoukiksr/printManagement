@@ -1,5 +1,6 @@
 import { useOutsideClick } from "@/utils/outSideClick";
 import { stopScroll } from "@/utils/stopScroll";
+import { Staatliches } from "next/font/google";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function PrinterCreation({ status, hidePopup }) {
@@ -13,7 +14,7 @@ export default function PrinterCreation({ status, hidePopup }) {
       document.body.style.overflow = "auto";
       window.removeEventListener("scroll", stopScroll);
     };
-  }, []);
+  }, [status]);
 
   const [formData, setFormData] = useState({
     printer: "",

@@ -5,6 +5,7 @@ export const requests = [
     type: "TP",
     quantity: "30",
     status: "completed",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     _id: 1,
@@ -12,6 +13,7 @@ export const requests = [
     type: "TD",
     quantity: "20",
     status: "pending",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     _id: 2,
@@ -19,6 +21,7 @@ export const requests = [
     type: "Cours",
     quantity: "50",
     status: "refused",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     _id: 3,
@@ -26,6 +29,7 @@ export const requests = [
     type: "TP",
     quantity: "15",
     status: "completed",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     _id: 4,
