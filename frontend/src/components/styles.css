@@ -6,15 +6,21 @@ button {
   background-color: var(--primary);
   color: #fff;
   border-radius: 12px;
-  padding: 9px 30px;
+  padding: 15px 20;
 }
 
 .btn-outline {
   border: 2px solid var(--primary);
   background-color: #fff;
-  padding: 9px 30px;
+  padding: 15px 20px;
   border-radius: 12px;
   font-weight: bold;
+}
+
+.btn-gray {
+  background-color: var(--gray-100);
+  padding: 15px 20px;
+  border-radius: 12px;
 }
 
 .field {
@@ -79,4 +85,27 @@ table th {
 .refused {
   background-color: #f1bfc9;
   color: #9a0422;
+}
+
+
+/* costum popup background */
+.popup {
+  display: flex;
+  background-color: #68686899;
+  backdrop-filter: blur(5px);
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content{
+  background-color: var(--white);
+  border: 4px solid var(--borders);
+  border-radius: 12px ;
+  padding: 32px;
 }
