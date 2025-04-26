@@ -35,7 +35,7 @@ export default function ReqItem({ item }) {
       <td>
         <div className={`${item.status} flex items-center `}>
           {" "}
-          <li></li> {item.status}
+          <li></li> {item.status.replace(/_/g, " ")}
         </div>
       </td>
       <td>

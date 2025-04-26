@@ -4,6 +4,7 @@ import "../components/styles.css";
 import Navbar from "@/components/Navbar";
 import Providers from "./Providers";
 
+
 const cairo = Cairo({
   variable: "--font-cairo",
   subsets: ["latin"],

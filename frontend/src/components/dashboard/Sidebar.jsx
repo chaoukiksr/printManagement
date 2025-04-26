@@ -4,6 +4,7 @@ import {
   ChartBarIcon,
   DocumentIcon,
   HomeIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -43,6 +44,16 @@ export default function Sidebar() {
             >
               <ChartBarIcon className="size-6" />
               <span className="font-bold lg:block md:hidden sm:block">Statistics</span>
+            </div>
+          </Link>
+          <Link href={"/admin/accounts"}>
+            <div
+              className={`flex items-center gap-3 my-4 ${
+                pathname !== "/admin/accounts" && "text-gray-400"
+              }`}
+            >
+              <UserIcon className="size-6" />
+              <span className="font-bold lg:block md:hidden sm:block">Accounts</span>
             </div>
           </Link>
         </div>

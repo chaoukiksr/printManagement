@@ -20,7 +20,6 @@ export default function ReqTable({ selectedStatus }) {
 
   useEffect(() => {
     if (requests) {
-      dispatch(getNotification(requests));
       setFiltredReq(requests);
     }
   }, [requests]);
@@ -100,7 +99,7 @@ export default function ReqTable({ selectedStatus }) {
                 <span
                   className={`text-gray-400 flex items-center ${item.status}`}
                 >
-                  <li></li> {item.status}
+                  <li></li> {item.status.replace(/_/g, " ")}
                 </span>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { useOutsideClick } from "@/utils/outSideClick";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReqForm from "./ReqForm";
+import { stopScroll } from "@/utils/stopScroll";
 
 export default function ViewReqPopup() {
   const router = useRouter();
@@ -21,6 +22,15 @@ export default function ViewReqPopup() {
 
   const [req, setReq] = useState({});
   const [status, setStatus] = useState(false);
+
+  useEffect(() => {
+    stopScroll(status);
+
+    return () => {
+      document.body.style.overflow = "auto";
+      window.removeEventListener("scroll", stopScroll);
+    };
+  }, [status]);
 
   useEffect(() => {
     if (reqId) {
@@ -41,6 +51,17 @@ export default function ViewReqPopup() {
         <h3 className="font-bold text-xl">Request information</h3>
 
         <ReqForm reqData={req} />
+
+        {req.status === "progress" && (
+          <div className="cta flex flex-wrap items-center gap-3 mt-3">
+            <button className="refused flex-1 !py-4 min-w-[200px]">
+              Refuse the request
+            </button>
+            <button className="approved flex-1 !py-4 min-w-[200px]">
+              Approve the request
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

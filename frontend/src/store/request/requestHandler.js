@@ -3,10 +3,11 @@ import { setRequests } from "./requestSlice";
 
 export const getRequests = () => async (dispatch) => {
   const statusOrder = {
-    pending: 1,
-    approved: 2,
-    refused: 3,
+    wait_for_printer : 1 ,
+    wait_for_teacher : 2 ,
+    in_progress: 3,
     completed: 4,
+    refused: 5,
   };
 
   const sortedRequests = [...requests].sort((a, b) => {

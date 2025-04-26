@@ -13,8 +13,9 @@ export default function page() {
       >
         <div className="all cursor-pointer" onClick={()=> setSelectedStatus('all')}>All</div>
         <div className="completed cursor-pointer" onClick={()=> setSelectedStatus('completed')}>Completed</div>
-        <div className="approved cursor-pointer" onClick={()=> setSelectedStatus('approved')}>Approved</div>
-        <div className="pending cursor-pointer" onClick={()=> setSelectedStatus('pending')}>Pending</div>
+        <div className="wait_for_printer cursor-pointer" onClick={()=> setSelectedStatus('wait_for_printer')}>Wait for printer</div>
+        <div className="wait_for_teacher cursor-pointer" onClick={()=> setSelectedStatus('wait_for_teacher')}>Wait for teacher</div>
+        <div className="in_progress cursor-pointer" onClick={()=> setSelectedStatus('in_progress')}>In progress</div>
         <div className="refused cursor-pointer" onClick={()=> setSelectedStatus('refused')}>Refused</div>
       </div>
       <ReqTable selectedStatus={selectedStatus}/>

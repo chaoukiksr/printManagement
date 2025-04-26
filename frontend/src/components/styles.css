@@ -58,9 +58,11 @@ table th {
 /* request status */
 
 .completed,
-.pending,
+.in_progress,
 .refused,
 .approved,
+.wait_for_printer ,
+.wait_for_teacher,
 .all {
   width: fit-content;
   padding: 8px 15px;
@@ -78,13 +80,21 @@ table th {
   background-color: #abefc3;
   color: #23452f;
 }
-.pending {
+.in_progress {
   background-color: #b9d6fd;
   color: #435f86;
 }
 .refused {
   background-color: #f1bfc9;
   color: #9a0422;
+}
+.wait_for_teacher {
+  background-color: #FFC383;
+  color: #4D2F0F;
+}
+.wait_for_printer{
+  background-color: #FFE1C1;
+  color: #884C0C;
 }
 
 
@@ -102,8 +112,10 @@ table th {
 }
 
 .popup-content{
-  background-color: var(--white);
+  background-color: white ;
   border: 4px solid var(--borders);
   border-radius: 12px ;
-  padding: 32px;
+  padding: 40px 32px 24px 32px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
