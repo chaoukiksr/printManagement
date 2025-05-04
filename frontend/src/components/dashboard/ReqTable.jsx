@@ -5,8 +5,13 @@ import { requests } from "@/testdata";
 import { useDispatch, useSelector } from "react-redux";
 import { getNotification } from "@/store/notification/notificationHandler";
 import { getRequests } from "@/store/request/requestHandler";
-import { AdjustmentsVerticalIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import {
+  AdjustmentsVerticalIcon,
+  DocumentIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ReqTable({ selectedStatus }) {
   const { role } = useSelector((state) => state.auth);
@@ -36,8 +41,13 @@ export default function ReqTable({ selectedStatus }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  return (
-    <div className="border border-gray-400 rounded-lg m-4">
+  const tableComponent = () => (
+    <div
+      className={`border border-gray-300 rounded-lg m-4 shadow-2xl ${
+        pathname === "/admin" &&
+        "hover:scale-101 transition-all duration-200 cursor-pointer"
+      }`}
+    >
       <table className="w-full p-3  hidden md:table">
         <thead>
           <tr>
@@ -115,4 +125,10 @@ export default function ReqTable({ selectedStatus }) {
       </div>
     </div>
   );
+
+  if (pathname === "/admin") {
+    return <Link href={"/admin/requests"}>{tableComponent()}</Link>;
+  }else {
+    return tableComponent();
+  }
 }

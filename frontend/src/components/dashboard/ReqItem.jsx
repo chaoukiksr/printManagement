@@ -16,12 +16,11 @@ export default function ReqItem({ item }) {
 
   return (
     <tr
-      className="bg-white border-t border-gray-400"
+      className="bg-white border-t border-gray-300 cursor-pointer hover:scale-101 transition-all duration-100"
       onClick={() => {
         if (role === "admin") return;
         router.push(`${pathname}?viewReq=${item._id}`);
       }}
-      style={{ cursor: role !== "admin" && "url(/view.svg) , pointer" }}
     >
       <td>
         <div className="account flex items-center gap-2">

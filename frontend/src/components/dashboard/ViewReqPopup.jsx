@@ -52,7 +52,7 @@ export default function ViewReqPopup() {
 
         <ReqForm reqData={req} />
 
-        {req.status === "progress" && (
+        {req.status === "in_progress" && (
           <div className="cta flex flex-wrap items-center gap-3 mt-3">
             <button className="refused flex-1 !py-4 min-w-[200px]">
               Refuse the request
