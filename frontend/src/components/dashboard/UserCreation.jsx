@@ -3,7 +3,7 @@ import { stopScroll } from "@/utils/stopScroll";
 import { Staatliches } from "next/font/google";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function PrinterCreation({ status, hidePopup }) {
+export default function UserCreation({ status, hidePopup, role }) {
   const popupRef = useRef(null);
   useOutsideClick(popupRef, hidePopup);
 
@@ -38,20 +38,24 @@ export default function PrinterCreation({ status, hidePopup }) {
     }));
   };
 
-  if(!status) return null;
-  
+  if (!status) return null;
+
   return (
     <div className={`popup`}>
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
-        <h3 className="text-xl font-bold text-center mb-7">Printer creation</h3>
+        <h3 className="text-xl font-bold text-center mb-7">
+          <span style={{ textTransform: "capitalize" }}>{role}</span> creation
+        </h3>
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label htmlFor="printer">Printer Email</label>
+            <label htmlFor="email">
+              <span style={{ textTransform: "capitalize" }}>{role}</span> Email
+            </label>
             <div className="input">
               <input
                 type="email"
-                id="printer"
-                placeholder="Enter your Printr email"
+                id="email"
+                placeholder={`Enter your ${role} email`}
                 value={formData.printer}
                 onChange={handleInputChange}
                 required
@@ -70,7 +74,7 @@ export default function PrinterCreation({ status, hidePopup }) {
             >
               Cancel
             </button>
-            <button className="btn flex-grow-1">Create the printer</button>
+            <button className="btn flex-grow-1">{role === 'printer' ? 'Create the' : 'Add'} {role}</button>
           </div>
         </form>
       </div>

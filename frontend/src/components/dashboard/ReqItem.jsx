@@ -16,7 +16,7 @@ export default function ReqItem({ item }) {
 
   return (
     <tr
-      className="bg-white border-t border-gray-300 cursor-pointer hover:scale-101 transition-all duration-100"
+    className={`bg-white border-t border-gray-300 cursor-pointer  transition-all duration-100 ${pathname !== '/admin' && 'hover:scale-101'} `}
       onClick={() => {
         if (role === "admin") return;
         router.push(`${pathname}?viewReq=${item._id}`);

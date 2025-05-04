@@ -175,5 +175,9 @@ export const admins = [
 ]
 
 export const printers = [
-  
+  {
+    _id : 0 ,
+    name : 'printer' ,
+    email : 'printer@gmail.com'
+  }
 ]
