@@ -62,7 +62,7 @@ export default function UserCreation({ status, hidePopup, role }) {
               />
             </div>
             <p className="text-gray-400" style={{ fontSize: "14px" }}>
-              we will sent an invitation to this email so the Printer can create
+              we will sent an invitation to this email so the {role} can create
               his account.
             </p>
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import DeletePopup from "@/components/dashboard/DeletePopup";
 import DepCreation from "@/components/dashboard/DepCreation";
 import DepTable from "@/components/dashboard/DepTable";
 import EditAccount from "@/components/dashboard/EditAccount";
@@ -16,7 +17,7 @@ export default function page() {
   const [popupStatus, setPopupStatus] = useState({
     dep: false,
     printer: false,
-    admin : false ,
+    admin: false,
     teacher: false,
   });
 
@@ -39,7 +40,7 @@ export default function page() {
         </button>
       </div>
 
-      {role === "admin" ? <DepTable /> : <></>}
+      {role === "admin" ? <DepTable /> : <UserTable role={"teacher"} />}
 
       {role === "admin" && (
         <>
@@ -67,9 +68,7 @@ export default function page() {
         <h3 className="text-3xl font-bold">Admins</h3>
         <button
           className={`btn-outline flex items-center gap-3`}
-          onClick={() =>
-            setPopupStatus((prev) => ({ ...prev, admin: true }))
-          }
+          onClick={() => setPopupStatus((prev) => ({ ...prev, admin: true }))}
         >
           <PlusIcon className="size-6" />
           Add Admin
@@ -85,20 +84,27 @@ export default function page() {
 
       <UserCreation
         status={popupStatus.printer}
-        role={'printer'}
+        role={"printer"}
         hidePopup={() =>
           setPopupStatus((prev) => ({ ...prev, printer: false }))
         }
       />
 
-
       <UserCreation
         status={popupStatus.admin}
-        role={'admin'}
+        role={"admin"}
+        hidePopup={() => setPopupStatus((prev) => ({ ...prev, admin: false }))}
+      />
+
+      <UserCreation
+        status={popupStatus.teacher}
+        role={"teacher"}
         hidePopup={() =>
-          setPopupStatus((prev) => ({ ...prev, admin: false }))
+          setPopupStatus((prev) => ({ ...prev, teacher: false }))
         }
       />
+
+      <DeletePopup />
     </div>
   );
 }

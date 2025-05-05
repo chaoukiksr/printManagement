@@ -18,7 +18,6 @@ export default function EditAccount() {
 
   const [status, setStatus] = useState(false);
   const [account, setAccount] = useState({});
-  console.log("account", account);
 
   useOutsideClick(popupRef, () => {
     router.push(pathname);
@@ -41,7 +40,6 @@ export default function EditAccount() {
     else if (adminId) findTheAccount(adminId, admins);
     else {
       setStatus(false);
-      router.push(pathname);
     }
   }, [searchParams]);
 
@@ -68,7 +66,8 @@ export default function EditAccount() {
                 type="email"
                 required
                 placeholder="Enter the Email"
-                value={account && account.leaderEmail}
+                value={account && depId ? account.leaderEmail : account.email}
+                onChange={(e)=> setAccount(prev => ({...prev , [depId ? 'leaderEmail' : 'email'] : e.target.value}))}
               />
             </div>
             <p className="text-gray-400" style={{ fontSize: "14px" }}>

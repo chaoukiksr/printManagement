@@ -171,7 +171,11 @@ export const departments = [
   },
 ];
 export const admins = [
-
+  {
+    _id : 0 ,
+    name : 'admin' ,
+    email : 'admin@gmail.com'
+  }
 ]
 
 export const printers = [
