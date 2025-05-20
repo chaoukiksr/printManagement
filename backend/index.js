@@ -18,7 +18,7 @@ app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(cookieParser()); // Parse cookies
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin:"http://localhost:3000",
     credentials: true
 }));
 

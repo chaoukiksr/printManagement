@@ -1,14 +1,17 @@
 "use client";
 
+import { createDepartment } from "@/store/department/departmentHandler";
 import { useOutsideClick } from "@/utils/outSideClick";
 import { stopScroll } from "@/utils/stopScroll";
-import { useEffect } from "react";
-import { useState } from "react";
-import { useRef } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingButton from "@/components/ui/LoadingButton";
+import toast from "react-hot-toast";
 
 export default function DepCreation({ hidePopup, status }) {
+  const {user} = useSelector(state => state.auth);
   const popupRef = useRef(null);
+  const dispatch = useDispatch();
   useOutsideClick(popupRef, hidePopup);
 
   // Function to stop scrolling when the popup is open
@@ -22,19 +25,31 @@ export default function DepCreation({ hidePopup, status }) {
   }, [status]);
 
   const [formData, setFormData] = useState({
-    depName: "",
-    depLeaderEmail: "",
+    name: "",
+    chefEmail: "",
+    facultyId: user.facultyId, 
   });
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
-    // Reset form data after submission
-    setFormData({
-      depName: "",
-      depLeaderEmail: "",
-    });
+    setIsSubmitting(true);
+    try {
+      await createDepartment(formData, dispatch);
+      // Reset form data after successful submission
+      setFormData({
+        name: "",
+        chefEmail: "",
+        facultyId: "",
+      });
+      hidePopup(); // Close the popup after successful creation
+    } catch (error) {
+      // Error is already handled in the handler with toast
+      console.error("Department creation failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -54,26 +69,26 @@ export default function DepCreation({ hidePopup, status }) {
           </h3>
           <form onSubmit={handleSubmit}>
             <div className="field">
-              <label htmlFor="depName">Department name</label>
+              <label htmlFor="name">Department name</label>
               <div className="input">
                 <input
                   type="text"
-                  id="depName"
+                  id="name"
                   placeholder="Enter your department name"
-                  value={formData.depName}
+                  value={formData.name}
                   onChange={handleInputChange}
                   required
                 />
               </div>
             </div>
             <div className="field">
-              <label htmlFor="depLeaderEmail">Department - Leader admin</label>
+              <label htmlFor="chefEmail">Department - Leader admin</label>
               <div className="input">
                 <input
                   type="email"
-                  id="depLeaderEmail"
+                  id="chefEmail"
                   placeholder="Enter your department - leader admin"
-                  value={formData.depLeaderEmail}
+                  value={formData.chefEmail}
                   onChange={handleInputChange}
                   required
                 />
@@ -86,12 +101,20 @@ export default function DepCreation({ hidePopup, status }) {
 
             <div className="cta flex w-full items-center gap-3 mt-4 flex-wrap-reverse">
               <button
+                type="button"
                 className="btn-gray flex-grow-1 w-50"
-                onClick={() => hidePopup()}
+                onClick={hidePopup}
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
-              <button className="btn flex-grow-1">Create the department</button>
+              <LoadingButton
+                type="submit"
+                isLoading={isSubmitting}
+                className="btn flex-grow-1"
+              >
+                Create the department
+              </LoadingButton>
             </div>
           </form>
         </div>

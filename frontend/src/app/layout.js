@@ -3,7 +3,7 @@ import "./globals.css";
 import "../components/styles.css";
 import Navbar from "@/components/Navbar";
 import Providers from "./Providers";
-
+import { Toaster } from "react-hot-toast";
 
 const cairo = Cairo({
   variable: "--font-cairo",
@@ -22,6 +22,47 @@ export default function RootLayout({ children }) {
         <Providers>
           <Navbar />
           {children}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: "white",
+                color: "#333",
+                border: "1px solid var(--borders)",
+                borderRadius: "10px",
+                padding: "16px",
+                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+              },
+              success: {
+                iconTheme: {
+                  primary: "#10B981",
+                  secondary: "white",
+                },
+                style: {
+                  borderLeft: "4px solid #10B981",
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: "#EF4444",
+                  secondary: "white",
+                },
+                style: {
+                  borderLeft: "4px solid #EF4444",
+                },
+              },
+              warning: {
+                iconTheme: {
+                  primary: "#F59E0B",
+                  secondary: "white",
+                },
+                style: {
+                  borderLeft: "4px solid #F59E0B",
+                },
+              },
+            }}
+          />
         </Providers>
       </body>
     </html>

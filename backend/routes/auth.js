@@ -1,5 +1,5 @@
 import express from "express";
-import { register, verifyOTP, login, logout, verifyInvitation, checkAuth, getProfile } from "../controllers/authController.js";
+import { register, verifyOTP, login, logout, verifyInvitation, checkAuth, getProfile, resendOTP } from "../controllers/authController.js";
 import { checkEmailVerification, checkRole } from "../utils/middelwares/auth.js";
 
 const router = express.Router();
@@ -7,6 +7,7 @@ const router = express.Router();
 // Public routes (no authentication required)
 router.post("/register", register);
 router.post("/verify-otp", verifyOTP);
+router.post("/resend-otp", resendOTP);
 router.post("/verify-invitation", verifyInvitation);
 router.post("/login", checkEmailVerification, login);
 router.post("/logout", logout);

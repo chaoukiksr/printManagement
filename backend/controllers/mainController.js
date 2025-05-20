@@ -41,7 +41,7 @@ export const createDepartment = async (req, res) => {
 
         // Generate invitation token
         const invitationToken = crypto.randomBytes(32).toString("hex");
-        const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitationToken}&role=department&name=${name}&email=${chefEmail}`;
+        const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitationToken}&role=department&email=${chefEmail}`;
 
         // Create department
         const department = await Department.create({

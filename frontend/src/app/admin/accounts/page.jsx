@@ -21,6 +21,8 @@ export default function page() {
     teacher: false,
   });
 
+  
+  if(!role) return null;
   return (
     <div className="m-4 pb-12">
       <div className="flex items-center justify-between mb-4">

@@ -2,12 +2,12 @@
 import { useOutsideClick } from "@/utils/outSideClick";
 import { stopScroll } from "@/utils/stopScroll";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function DeletePopup() {
-  // handle the search params to know the deleted user
+export default function DeletePopup({ onDelete, title }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [status, setStatus] = useState(false);
 
@@ -20,7 +20,6 @@ export default function DeletePopup() {
     router.push(pathname); // close popup when clicking outside
   });
   
-
   // Function to stop scrolling when the popup is open
   useEffect(() => {
     stopScroll(status);
@@ -31,28 +30,44 @@ export default function DeletePopup() {
     };
   }, [status]);
 
-
   useEffect(() => {
     role && userId ? setStatus(true) : setStatus(false)
   }, [searchParams]);
 
+  const handleDelete = async () => {
+    if (!userId || isDeleting) return;
+    
+    setIsDeleting(true);
+    try {
+      await onDelete(userId);
+      router.push(pathname); // Close popup after successful deletion
+    } catch (error) {
+      console.error("Deletion failed:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   if (!status) return null;
   return (
     <div className="popup">
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
         <h3 className="text-xl font-bold text-center mb-7">
-          Do you want to delete this
-          <span style={{ textTransform: "capitalize" }}> {role}</span>
+          {title || `Do you want to delete this ${role ? role.charAt(0).toUpperCase() + role.slice(1) : 'item'}?`}
         </h3>
 
         <div className="cta flex items-center gap-3 flex-wrap mt-4">
-          <button className="btn-gray flex-1 min-w-[200px]">Yes</button>
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className={`btn-gray flex-1 min-w-[200px] ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isDeleting ? 'Deleting...' : 'Yes'}
+          </button>
           <button
             className="btn flex-1 min-w-[200px]"
-            onClick={() => {
-              router.push(pathname);
-            }}
+            onClick={() => router.push(pathname)}
+            disabled={isDeleting}
           >
             No
           </button>
