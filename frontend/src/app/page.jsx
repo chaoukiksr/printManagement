@@ -45,6 +45,14 @@ export default function Home() {
 
         <img src="/assets/dashboard-img.png" alt="" className="w-full" />
       </picture>
+      {/* <img
+        src="/assets/dashboard-img.png"
+        alt=""
+        className="w-full mt-[50px] "
+        style={{
+          filter: "drop-shadow(0 0 20px var(--primary))",
+        }}
+      /> */}
     </div>
   );
 }
