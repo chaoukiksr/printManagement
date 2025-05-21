@@ -3,17 +3,13 @@ import { useOutsideClick } from "@/utils/outSideClick";
 import { stopScroll } from "@/utils/stopScroll";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import ButtonLoader from "../ui/ButtonLoader";
 
-export default function DeletePopup({ onDelete, title }) {
+export default function DeletePopup({ status , onDelete , title , closePopup}) {
   const router = useRouter();
-  const pathname = usePathname();
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [status, setStatus] = useState(false);
-
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role");
-  const userId = searchParams.get("userId");
 
   const popupRef = useRef(null);
   useOutsideClick(popupRef, () => {
@@ -30,17 +26,15 @@ export default function DeletePopup({ onDelete, title }) {
     };
   }, [status]);
 
-  useEffect(() => {
-    role && userId ? setStatus(true) : setStatus(false)
-  }, [searchParams]);
+  
 
   const handleDelete = async () => {
-    if (!userId || isDeleting) return;
+    if (!onDelete) return;
     
     setIsDeleting(true);
     try {
-      await onDelete(userId);
-      router.push(pathname); // Close popup after successful deletion
+      await onDelete();
+      closePopup();
     } catch (error) {
       console.error("Deletion failed:", error);
     } finally {
@@ -62,11 +56,11 @@ export default function DeletePopup({ onDelete, title }) {
             disabled={isDeleting}
             className={`btn-gray flex-1 min-w-[200px] ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isDeleting ? 'Deleting...' : 'Yes'}
+            {isDeleting ? <ButtonLoader/> : 'Yes'}
           </button>
           <button
             className="btn flex-1 min-w-[200px]"
-            onClick={() => router.push(pathname)}
+            onClick={closePopup}
             disabled={isDeleting}
           >
             No

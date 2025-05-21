@@ -17,6 +17,10 @@ const invitationSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId ,
         required : [true , "From is required"],
     },
+    isSubAdmin : {
+        type : Boolean ,
+        default : false,
+    },
     invitationLink : {
         type : String ,
     },

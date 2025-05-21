@@ -12,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <div className="min-h-screen">
-      <AuthChecker>
+      <AuthChecker fromDashboard={true}>
         <Navbar />
         <div className="flex">
           <div

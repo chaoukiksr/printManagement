@@ -1,6 +1,7 @@
 "use client";
 import ButtonLoader from "@/components/ui/ButtonLoader";
-import { login } from "@/store/auth/authHandler";
+import { checkAuth, login } from "@/store/auth/authHandler";
+import { redirectBaseOnRole } from "@/utils/redirect";
 import {
   EnvelopeIcon,
   EyeIcon,
@@ -9,9 +10,10 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {toast} from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+
 
 export default function Login() {
   const [user, setUser] = useState({ email: "", password: "" });
@@ -19,11 +21,20 @@ export default function Login() {
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const {isFetching} = useSelector((state)=> state.auth);
+  const {isFetching , user : existingUser} = useSelector((state)=> state.auth);
 
   const changeHandler = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+
+
+  // check the user if already logged in
+  useEffect(()=>{
+    if(existingUser){
+      redirectBaseOnRole(existingUser.role, router);
+    }
+  },[existingUser]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,13 +42,7 @@ export default function Login() {
     
     if(res.data){
       toast.success("You have successfully logged in");
-      if(res.data.role === "admin" || res.data.role === "department" ){
-        router.push("/admin");
-      }else if(res.data.role === "teacher"){
-        router.push("/teacher");
-      }else if(res.data.role === "printer"){
-        router.push("/printer");
-      }
+      redirectBaseOnRole(res.data.role, router);
     }else {
       toast.success("Please verify your email !");
       router.push(`/register/verify?email=${user.email}`);

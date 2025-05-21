@@ -5,84 +5,12 @@ import Invitation from "../models/Invitations.js";
 import { emailSender } from "../utils/email/emailSender.js";
 import { departmentInvitationTemplate } from "../utils/email/emailTemplates.js";
 import crypto from "crypto";
-import bcrypt from "bcryptjs";
 
-// Create department and send invitation
-export const createDepartment = async (req, res) => {
-    try {
-        const { name, chefEmail, facultyId } = req.body;
-
-        // Validate input
-        if (!name || !chefEmail || !facultyId) {
-            return res.status(400).json({
-                success: false,
-                message: "Department name, chef email, and faculty ID are required"
-            }); 
-        }
-
-        // Check if department already exists
-        const existingDepartment = await Department.findOne({ name, facultyId });
-        if (existingDepartment) {
-            return res.status(400).json({
-                success: false,
-                message: "Department with this name already exists"
-            });
-        }
-
-        // ckeck if the chefEmail is already in use
-        const existingUser = await User.findOne({ email: chefEmail });
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: "Email already in use"
-            });
-        }
-
-
-        // Generate invitation token
-        const invitationToken = crypto.randomBytes(32).toString("hex");
-        const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitationToken}&role=department&email=${chefEmail}`;
-
-        // Create department
-        const department = await Department.create({
-            name,
-            chefEmail,
-            facultyId,
-            invitationLink: invitationToken
-        });
-
-        // Send invitation email
-        await emailSender({
-            email: chefEmail,
-            subject: "Invitation - Print Management System",
-            html: departmentInvitationTemplate(name, invitationLink)
-        });
-
-        res.status(201).json({
-            success: true,
-            message: "Department created and invitation sent successfully",
-            data: {
-                _id: department._id,
-                name: department.name,
-                chefEmail: department.chefEmail,
-                facultyId: department.facultyId
-            }
-        });
-
-    } catch (error) {
-        console.error("Department creation error:", error);
-        res.status(500).json({
-            success: false,
-            message: "Error creating department",
-            error: error.message
-        });
-    }
-};
 
 // Create invitation (for teachers, printers, and admins)
 export const createInvitation = async (req, res) => {
     try {
-        const { email, role, from } = req.body;
+        const { email, role, from , isSubAdmin = false} = req.body;
 
         // Validate input
         if (!email || !role || !from) {
@@ -105,7 +33,7 @@ export const createInvitation = async (req, res) => {
         const existingInvitation = await Invitation.findOne({
             email,
             role,
-            from
+            from,
         });
 
         if (existingInvitation) {
@@ -136,13 +64,14 @@ export const createInvitation = async (req, res) => {
 
         // Generate invitation token
         const invitationToken = crypto.randomBytes(32).toString("hex");
-        const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitationToken}&role=${role}&email=${email}`;
+        const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitationToken}&role=${role}&email=${email}&isSubAdmin=${isSubAdmin}`;
 
         // Create invitation
         const invitation = await Invitation.create({
             email,
             role,
             from,
+            isSubAdmin,
             invitationLink: invitationToken
         });
 

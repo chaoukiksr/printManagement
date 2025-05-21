@@ -54,10 +54,14 @@ app.use(passport.session());
 
 // Routes
 import authRoutes from "./routes/auth.js";
-import mainRoutes from "./routes/main.js";
+import invRoutes from "./routes/inv.js";
+import departmentRoutes from "./routes/department.js";
 
 app.use("/api/auth", authRoutes);
-app.use("/api", mainRoutes);
+app.use("/api/inv", invRoutes);
+app.use("/api/department", departmentRoutes);
+
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {

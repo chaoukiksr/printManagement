@@ -79,7 +79,7 @@ export const checkAuth = async (dispatch) => {
     });
 
     if (response.data.success) {
-      dispatch(setUser(response.data.data || null));
+      dispatch(setUser(response.data.data));
     } else {
       dispatch(setUser(null));
     }

@@ -16,7 +16,7 @@ export const createDepartment = async (departmentData, dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.post(
-            `${API_URL}/departments`,
+            `${API_URL}/department/`,
             departmentData,
             { withCredentials: true }
         );
@@ -41,9 +41,10 @@ export const getDepartments = async (dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.get(
-            `${API_URL}/departments`,
+            `${API_URL}/department`,
             { withCredentials: true }
         );
+
 
         if (response.data.success) {
             dispatch(setDepartments(response.data.data));
@@ -64,7 +65,7 @@ export const updateDepartmentDetails = async (departmentId, updateData, dispatch
     try {
         dispatch(setIsFetching(true));
         const response = await axios.put(
-            `${API_URL}/departments/${departmentId}`,
+            `${API_URL}/department/${departmentId}`,
             updateData,
             { withCredentials: true }
         );
@@ -89,7 +90,7 @@ export const deleteDepartment = async (departmentId, dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.delete(
-            `${API_URL}/departments/${departmentId}`,
+            `${API_URL}/department/${departmentId}`,
             { withCredentials: true }
         );
 
