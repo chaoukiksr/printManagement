@@ -1,7 +1,8 @@
-import { getInvitations } from "@/store/invitation/invitationHandler";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import React, { useEffect } from "react";
+import { deleteInvitation, getInvitations } from "@/store/invitation/invitationHandler";
+import { TrashIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import DeletePopup from "./DeletePopup";
 
 export default function InvTable() {
   const { invitations } = useSelector((state) => state.invitations);
@@ -10,6 +11,15 @@ export default function InvTable() {
   useEffect(() => {
     getInvitations(dispatch);
   }, [dispatch]);
+
+  // delete invitation 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedInvitationId, setSelectedInvitationId] = useState(null);
+
+  const handleDelete = (invitationId) => {
+    setIsDeleteOpen(true);
+    setSelectedInvitationId(invitationId);
+  }
 
   if (!invitations) return null;
 
@@ -21,9 +31,9 @@ export default function InvTable() {
     );
   }
 
-  return (
-    <div>
-      <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden mt-3">
+  const tableComponent = () => (
+    <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
+      <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden hidden md:table">
         <thead className="bg-(--white-blue) w-full ">
           <tr>
             <th style={{ textTransform: "capitalize" }}>Role</th>
@@ -49,6 +59,51 @@ export default function InvTable() {
           ))}
         </tbody>
       </table>
+
+      {/* Mobile version */}
+      <div className="w-full p-3 md:hidden bg-white shadow-xl rounded-lg">
+        {invitations.map((inv, index) => (
+          <div key={inv._id} className="pt-3 flex flex-col gap-3">
+            <div className="flex items-center px-4">
+              <span className="flex-1 font-bold">Role</span>
+              <span className="text-gray-400 flex-1">{inv.isSubAdmin ? "Admin" : inv.role}</span>
+            </div>
+            <div className="flex items-center px-4">
+              <span className="flex-1 font-bold">Email</span>
+              <div className="flex items-center gap-2 flex-1">
+                <EnvelopeIcon className="size-5" />
+                <span className="text-gray-400">{inv.email}</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-end px-4 py-2">
+              <TrashIcon
+                className="size-7 cursor-pointer circle"
+                onClick={() => handleDelete(inv._id)}
+              />
+            </div>
+            {index !== invitations.length - 1 && (
+              <div className="border-t border-gray-200"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      {tableComponent()}
+      {isDeleteOpen && <DeletePopup
+        status={isDeleteOpen}
+        onDelete={() => {
+          deleteInvitation(selectedInvitationId, dispatch);
+        }}
+        title={"Are you sure you want to delete this invitation?"}
+        closePopup={() => {
+          setIsDeleteOpen(false);
+          setSelectedInvitationId(null);
+        }}
+      />}
     </div>
   );
 }

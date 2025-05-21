@@ -24,8 +24,8 @@ export default function page() {
   return (
     <div className="m-4 pb-12">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-3xl font-bold">
-          {role === "admin" ? "Department" : "Teachers"}
+        <h3 className="text-xl md:text-3xl font-bold">
+          {role === "admin" ? "Departments" : "Teachers"}
         </h3>
         <button
           className="btn flex items-center gap-3"
@@ -45,7 +45,7 @@ export default function page() {
       {role === "admin" && (
         <>
           <div className="flex items-center justify-between my-4">
-            <h3 className="text-3xl font-bold">Printer</h3>
+            <h3 className="text-xl md:text-3xl font-bold">Printer</h3>
             <button
               className={`btn-outline flex items-center gap-3 ${
                 printers && printers.length === 1
@@ -67,7 +67,7 @@ export default function page() {
       )}
 
       <div className="flex items-center justify-between my-4">
-        <h3 className="text-3xl font-bold">Admins</h3>
+        <h3 className="text-xl md:text-3xl font-bold">Admins</h3>
         <button
           className={`btn-outline flex items-center gap-3`}
           onClick={() => setPopupStatus((prev) => ({ ...prev, admin: true }))}
@@ -79,7 +79,7 @@ export default function page() {
       <UserTable role={"admin"} />
 
       <div className="my-5">
-        <h3 className="text-3xl font-bold">Invitations</h3>
+        <h3 className="text-xl md:text-3xl font-bold">Invitations</h3>
         <InvTable />
       </div>
 

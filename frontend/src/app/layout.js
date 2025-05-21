@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Providers from "./Providers";
 import { Toaster } from "react-hot-toast";
 import AuthChecker from "./AuthChecker";
+import Loader from "@/components/dashboard/Loader";
 
 const cairo = Cairo({
   variable: "--font-cairo",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${cairo.variable} antialiased min-h-screen`}>
         <Providers>
+          <Loader/>
           <AuthChecker fromDashboard={false}>
             <Navbar />
             {children}

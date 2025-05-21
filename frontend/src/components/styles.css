@@ -1,26 +1,124 @@
 button {
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn {
   background-color: var(--primary);
   color: #fff;
   border-radius: 12px;
-  padding: 15px 20;
+  padding: 12px 20px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 .btn-outline {
   border: 2px solid var(--primary);
   background-color: #fff;
-  padding: 15px 20px;
+  color: var(--primary);
+  padding: 12px 20px;
   border-radius: 12px;
-  font-weight: bold;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  font-size: 0.95rem;
+}
+
+.btn-outline:hover {
+  background-color: var(--primary);
+  color: #fff;
 }
 
 .btn-gray {
   background-color: var(--gray-100);
-  padding: 15px 20px;
+  color: var(--gray-700);
+  padding: 12px 20px;
   border-radius: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.btn-gray:hover {
+  background-color: var(--gray-200);
+}
+
+/* Responsive button sizes */
+@media (max-width: 768px) {
+  .btn, .btn-outline, .btn-gray {
+    padding: 10px 16px;
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn, .btn-outline, .btn-gray {
+    padding: 8px 14px;
+    min-width: 90px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Icon button styles */
+.btn-icon {
+  padding: 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-icon:hover {
+  background-color: var(--gray-100);
+}
+
+.btn-icon:active {
+  transform: scale(0.95);
+}
+
+/* Button with loading state */
+.btn-loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Button group styles */
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .btn-group {
+    gap: 6px;
+  }
 }
 
 .field {

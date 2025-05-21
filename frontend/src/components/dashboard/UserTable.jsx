@@ -3,6 +3,7 @@
 import {
   AdjustmentsVerticalIcon,
   TrashIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
 import DeletePopup from "./DeletePopup";
@@ -79,9 +80,9 @@ export default function UserTable({ role }) {
     );
   }
 
-  return (
-    <>
-      <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden">
+  const tableComponent = () => (
+    <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
+      <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden hidden md:table">
         <thead className="bg-(--white-blue) w-full ">
           <tr>
             <th style={{ textTransform: "capitalize" }}>{role} Name</th>
@@ -108,10 +109,43 @@ export default function UserTable({ role }) {
         </tbody>
       </table>
 
+      {/* Mobile version */}
+      <div className="w-full p-3 md:hidden bg-white shadow-xl rounded-lg">
+        {users.map((user, index) => (
+          <div key={user._id} className="pt-3 flex flex-col gap-3">
+            <div className="flex items-center px-4">
+              <span className="flex-1 font-bold">Name</span>
+              <div className="account flex-1 flex items-center gap-2">
+                <UserCircleIcon className="size-6" />
+                <div className="username">{user.username}</div>
+              </div>
+            </div>
+            <div className="flex items-center px-4">
+              <span className="flex-1 font-bold">Email</span>
+              <span className="text-gray-400 flex-1">{user.email}</span>
+            </div>
+            <div className="flex items-center justify-end px-4 py-2">
+              <TrashIcon
+                className="size-7 cursor-pointer circle"
+                onClick={() => handleDelete(user._id)}
+              />
+            </div>
+            {index !== users.length - 1 && (
+              <div className="border-t border-gray-200"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {tableComponent()}
       <DeletePopup
         status={isDeleteOpen}
         onDelete={() => {
-          deleteUser(selectedUserId , role , dispatch);
+          deleteUser(selectedUserId, role, dispatch);
           setIsDeleteOpen(false);
           setSelectedUserId(null);
         }}

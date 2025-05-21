@@ -42,7 +42,7 @@ export default function Login() {
     
     if(res.data){
       toast.success("You have successfully logged in");
-      redirectBaseOnRole(res.data.role, router);
+      redirectBaseOnRole(res.data.role, router , dispatch);
     }else {
       toast.success("Please verify your email !");
       router.push(`/register/verify?email=${user.email}`);
