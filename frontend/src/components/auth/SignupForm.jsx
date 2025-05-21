@@ -12,14 +12,17 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ButtonLoader from "../ui/ButtonLoader";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function SignupForm() {
   const {isFetching} = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   // check if the user is invited
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const role = searchParams.get("role");
   const email = searchParams.get("email");
+  const isSubAdmin = searchParams.get("isSubAdmin");
 
   const [user, setUser] = useState({
     username: "",
@@ -28,6 +31,7 @@ export default function SignupForm() {
     confpass: "",
     facultyName: "",
     role: role || "admin",
+    isSubAdmin: isSubAdmin === "true" ? true : false,
   });
 
   const router = useRouter();
@@ -61,8 +65,10 @@ export default function SignupForm() {
       }
     } else {
       // verify the invitation
-      const res = await verifyInvitation({...user, token});
-      if (res.succees) {
+      const res = await verifyInvitation({...user, token} , dispatch);
+      console.log(res);
+      
+      if (res.success) {
         toast.success("You have successfully verified the invitation");
         router.push("/login");
       }

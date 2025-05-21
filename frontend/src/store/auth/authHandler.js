@@ -105,15 +105,19 @@ export const getProfile = async () => {
 };
 
 // Verify invitation and register
-export const verifyInvitation = async (invitationData) => {
+export const verifyInvitation = async (invitationData, dispatch) => {
   try {
+    dispatch(setIsFetching(true));
     const response = await axios.post(
       `${API_URL}/auth/verify-invitation`,
       invitationData
     );
     return response.data;
   } catch (error) {
+    toast.error(error.response?.data.message || "Invitation verification failed");
     throw error.response?.data || { message: "Invitation verification failed" };
+  } finally {
+    dispatch(setIsFetching(false));
   }
 };
 

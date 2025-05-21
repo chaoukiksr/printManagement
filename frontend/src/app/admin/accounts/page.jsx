@@ -1,18 +1,17 @@
 "use client";
 
-import DeletePopup from "@/components/dashboard/DeletePopup";
 import DepCreation from "@/components/dashboard/DepCreation";
 import DepTable from "@/components/dashboard/DepTable";
-import EditAccount from "@/components/dashboard/EditAccount";
+import InvTable from "@/components/dashboard/InvTable";
 import UserCreation from "@/components/dashboard/UserCreation";
 import UserTable from "@/components/dashboard/UserTable";
-import { printers } from "@/testdata";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function page() {
   const { role } = useSelector((state) => state.auth);
+  const { printers } = useSelector((state) => state.user);
 
   const [popupStatus, setPopupStatus] = useState({
     dep: false,
@@ -21,8 +20,7 @@ export default function page() {
     teacher: false,
   });
 
-  
-  if(!role) return null;
+  if (!role) return null;
   return (
     <div className="m-4 pb-12">
       <div className="flex items-center justify-between mb-4">
@@ -50,12 +48,14 @@ export default function page() {
             <h3 className="text-3xl font-bold">Printer</h3>
             <button
               className={`btn-outline flex items-center gap-3 ${
-                printers.length === 1 ? "opacity-40 pointer-events-none" : ""
+                printers && printers.length === 1
+                  ? "opacity-40 pointer-events-none"
+                  : ""
               }`}
               onClick={() =>
                 setPopupStatus((prev) => ({ ...prev, printer: true }))
               }
-              disabled={printers.length === 1}
+              disabled={printers && printers.length === 1}
             >
               <PlusIcon className="size-6" />
               Add Printer
@@ -78,35 +78,47 @@ export default function page() {
       </div>
       <UserTable role={"admin"} />
 
-      <EditAccount />
-      <DepCreation
-        status={popupStatus.dep}
-        hidePopup={() => setPopupStatus((prev) => ({ ...prev, dep: false }))}
-      />
+      <div className="my-5">
+        <h3 className="text-3xl font-bold">Invitations</h3>
+        <InvTable />
+      </div>
 
-      <UserCreation
-        status={popupStatus.printer}
-        role={"printer"}
-        hidePopup={() =>
-          setPopupStatus((prev) => ({ ...prev, printer: false }))
-        }
-      />
+      {popupStatus.dep && (
+        <DepCreation
+          status={popupStatus.dep}
+          hidePopup={() => setPopupStatus((prev) => ({ ...prev, dep: false }))}
+        />
+      )}
 
-      <UserCreation
-        status={popupStatus.admin}
-        role={"admin"}
-        hidePopup={() => setPopupStatus((prev) => ({ ...prev, admin: false }))}
-      />
+      {popupStatus.printer && (
+        <UserCreation
+          status={popupStatus.printer}
+          role={"printer"}
+          hidePopup={() =>
+            setPopupStatus((prev) => ({ ...prev, printer: false }))
+          }
+        />
+      )}
 
-      <UserCreation
-        status={popupStatus.teacher}
-        role={"teacher"}
-        hidePopup={() =>
-          setPopupStatus((prev) => ({ ...prev, teacher: false }))
-        }
-      />
+      {popupStatus.admin && (
+        <UserCreation
+          status={popupStatus.admin}
+          role={"admin"}
+          hidePopup={() =>
+            setPopupStatus((prev) => ({ ...prev, admin: false }))
+          }
+        />
+      )}
 
-      <DeletePopup />
+      {popupStatus.teacher && (
+        <UserCreation
+          status={popupStatus.teacher}
+          role={"teacher"}
+          hidePopup={() =>
+            setPopupStatus((prev) => ({ ...prev, teacher: false }))
+          }
+        />
+      )}
     </div>
   );
 }

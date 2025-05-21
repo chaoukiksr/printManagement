@@ -3,9 +3,18 @@ import User from "../models/User.js";
 export const getPrinter = async (req, res) => {
   try {
     const { facultyId } = req.user;
-    const printers = await User.findOne({ role: "printer", facultyId }).select(
+    const printers = await User.find({ role: "printer", facultyId }).select(
       "-password"
     );
+
+    if (!printers) {
+      return res.status(404).json({
+        success: false,
+        message: "No Printer not found",
+        printers: [],
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "Printers fetched successfully",
@@ -62,14 +71,34 @@ export const getSubAdmins = async (req, res) => {
       isSubAdmin: true,
     }).select("-password");
 
-    
     res.status(200).json({
       success: true,
       message: "SubAdmins fetched successfully",
       subAdmins,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 
-
+export const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

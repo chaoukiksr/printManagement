@@ -15,7 +15,7 @@ export const createInvitation = async (invitationData, dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.post(
-            `${API_URL}/invite`,
+            `${API_URL}/inv`,
             invitationData,
             { withCredentials: true }
         );
@@ -36,11 +36,11 @@ export const createInvitation = async (invitationData, dispatch) => {
 };
 
 // Get invitations
-export const getInvitations = async (from, dispatch) => {
+export const getInvitations = async (dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.get(
-            `${API_URL}/invitations?from=${from}`,
+            `${API_URL}/inv`,
             { withCredentials: true }
         );
 
@@ -63,7 +63,7 @@ export const deleteInvitation = async (invitationId, dispatch) => {
     try {
         dispatch(setIsFetching(true));
         const response = await axios.delete(
-            `${API_URL}/invitations/${invitationId}`,
+            `${API_URL}/inv/${invitationId}`,
             { withCredentials: true }
         );
 

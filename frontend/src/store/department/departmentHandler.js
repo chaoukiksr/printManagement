@@ -8,6 +8,7 @@ import {
     removeDepartment,
     setError
 } from "./departmentSlice";
+import { getInvitations } from "../invitation/invitationHandler";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,6 +23,7 @@ export const createDepartment = async (departmentData, dispatch) => {
         );
 
         if (response.data.success) {
+            getInvitations(dispatch);
             dispatch(addDepartment(response.data.data));
             toast.success(response.data.message);
         }

@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import crypto from "crypto";
 import { emailSender } from "../utils/email/emailSender.js";
 import { departmentInvitationTemplate } from "../utils/email/emailTemplates.js";
+import Invitation from "../models/Invitations.js";
 
 
 // Create department and send invitation
@@ -29,10 +30,11 @@ export const createDepartment = async (req, res) => {
 
         // ckeck if the chefEmail is already in use
         const existingUser = await User.findOne({ email: chefEmail });
-        if (existingUser) {
+        const existingChef = await Department.findOne({ chefEmail });
+        if (existingUser || existingChef) {
             return res.status(400).json({
                 success: false,
-                message: "Email already in use"
+                message: "Email already in use or invitation already sent"
             });
         }
 
@@ -47,6 +49,14 @@ export const createDepartment = async (req, res) => {
             chefEmail,
             facultyId,
             invitationLink: invitationToken
+        });
+
+        // create invitation
+        await Invitation.create({
+            role : "department",
+            email : chefEmail,
+            from : facultyId,
+            invitationLink : invitationToken,
         });
 
         // Send invitation email
@@ -227,6 +237,7 @@ export const deleteDepartment = async (req, res) => {
         }
 
         // Delete department
+        await Invitation.findOneAndDelete({ email: department.chefEmail, role: "department" });
         await department.deleteOne();
 
         res.status(200).json({

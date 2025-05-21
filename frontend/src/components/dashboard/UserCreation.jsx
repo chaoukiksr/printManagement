@@ -1,11 +1,15 @@
+import { createInvitation } from "@/store/invitation/invitationHandler";
 import { useOutsideClick } from "@/utils/outSideClick";
 import { stopScroll } from "@/utils/stopScroll";
 import { Staatliches } from "next/font/google";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function UserCreation({ status, hidePopup, role }) {
   const popupRef = useRef(null);
   useOutsideClick(popupRef, hidePopup);
+
+  const dispatch = useDispatch();
 
   // Function to stop scrolling when the popup is open
   useEffect(() => {
@@ -16,27 +20,30 @@ export default function UserCreation({ status, hidePopup, role }) {
     };
   }, [status]);
 
-  const [formData, setFormData] = useState({
-    printer: "",
-  });
+  const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted:", formData);
+
+    switch(role){
+      case "printer":
+        createInvitation({email , role: "printer"}, dispatch)
+        break;
+      case "admin":
+        createInvitation({email , role: "admin" , isSubAdmin: true}, dispatch)
+        break;
+      case "teacher": 
+        createInvitation({email , role: "teacher"}, dispatch)
+        break;
+      default:
+        break;
+    }
+    
     // Reset form data after submission
-    setFormData({
-      printer: "",
-    });
+    hidePopup();
   };
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
 
   if (!status) return null;
 
@@ -56,8 +63,8 @@ export default function UserCreation({ status, hidePopup, role }) {
                 type="email"
                 id="email"
                 placeholder={`Enter your ${role} email`}
-                value={formData.printer}
-                onChange={handleInputChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
