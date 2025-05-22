@@ -156,11 +156,11 @@ table th {
 /* request status */
 
 .completed,
-.in_progress,
+.pending,
 .refused,
 .approved,
-.wait_for_printer ,
-.wait_for_teacher,
+.wf_printer ,
+.wf_teacher,
 .all {
   width: fit-content;
   padding: 8px 15px;
@@ -178,7 +178,7 @@ table th {
   background-color: #abefc3;
   color: #23452f;
 }
-.in_progress {
+.pending {
   background-color: #b9d6fd;
   color: #435f86;
 }
@@ -186,11 +186,11 @@ table th {
   background-color: #f1bfc9;
   color: #9a0422;
 }
-.wait_for_teacher {
+.wf_teacher {
   background-color: #FFC383;
   color: #4D2F0F;
 }
-.wait_for_printer{
+.wf_printer{
   background-color: #FFE1C1;
   color: #884C0C;
 }

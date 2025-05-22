@@ -37,15 +37,9 @@ export default function ReqTable({ selectedStatus }) {
   }, [selectedStatus, requests]);
 
   // Handle request click
-  const handleRequestClick = async (requestId) => {
+  const handleRequestClick = (requestId) => {
     if (role === "admin") return;
-
-    try {
-      dispatch(getRequestDetails(requestId));
-      router.push(`${pathname}?viewReq=${requestId}`);
-    } catch (error) {
-      console.error("Error fetching request details:", error);
-    }
+    router.push(`${pathname}?mode=view&id=${requestId}`);
   };
 
   if (isFetching) {
@@ -55,12 +49,13 @@ export default function ReqTable({ selectedStatus }) {
       </div>
     );
   }
-  if (requests && requests.length === 0)
+  if (requests && requests.length === 0){
     return (
       <div className="flex justify-center items-center p-8">
         <p className="text-gray-400">No requests found</p>
       </div>
-    );
+    )
+  }
 
   const tableComponent = () => (
     <div
@@ -78,11 +73,12 @@ export default function ReqTable({ selectedStatus }) {
           <table className="w-full p-3 hidden md:table">
             <thead>
               <tr>
-                <th>Teacher</th>
+                {(role === "admin" || role === "printer") && <th>Department</th>}
+                <th>{role === "teacher" ? 'Date' : 'Teacher'}</th>
                 <th>Type</th>
                 <th>Quantity</th>
                 <th>Status</th>
-                {role === "department" && <th>Edit</th>}
+                {role !== "admin" && <th>Edit</th>}
               </tr>
             </thead>
             <tbody>

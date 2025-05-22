@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/store/auth/authHandler";
 import toast from "react-hot-toast";
+import PrinterLoader from "../ui/PrinterLoader";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -154,7 +155,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[15px] z-50">
+      <div className={`navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[15px] z-50 ${(role !== "admin" && role !== "department") && "lg:container"}`}>
         <div className={`items-center justify-between z-50  ${showSidebar ? "hidden md:flex" : "flex"}`}>
           <Link href={"/"}>
             <h3 className="text-3xl font-bold">Name</h3>

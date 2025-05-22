@@ -8,6 +8,8 @@ const printRequestSchema = new mongoose.Schema({
         image: {type: String , ref: "User"},
     },
     departmentId : {type: mongoose.Schema.Types.ObjectId, ref: "Department"},
+    departmentName : {type: String , ref: "Department"},
+    facultyId : {type: mongoose.Schema.Types.ObjectId, ref: "Faculty"},
 
     // request details
     type : {type : String , enum : ["Test" , "Exam" , "Other"] , required: [true , "Type is required"]},

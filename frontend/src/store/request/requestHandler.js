@@ -18,14 +18,7 @@ export const getRequests = () => async (dispatch, getState) => {
     dispatch(setFetching(true));
     const { role } = getState().auth;
 
-    let endpoint = "/print";
-    if (role === "department") {
-      endpoint = "/print/department";
-    } else if (role === "printer") {
-      endpoint = "/print/printer";
-    }
-
-    const response = await axios.get(`${API_URL}${endpoint}`, {
+    const response = await axios.get(`${API_URL}/print`, {
       withCredentials: true,
     });
 
@@ -37,7 +30,7 @@ export const getRequests = () => async (dispatch, getState) => {
 };
 
 // Create new print request (teacher only)
-export const createRequest = (requestData) => async (dispatch, getState) => {
+export const createRequest = (formData) => async (dispatch, getState) => {
   try {
     dispatch(setFetching(true));
     const { role } = getState().auth;
@@ -46,10 +39,10 @@ export const createRequest = (requestData) => async (dispatch, getState) => {
       throw new Error("Only teachers can create print requests");
     }
 
-    const formData = new FormData();
-    Object.keys(requestData).forEach((key) => {
-      formData.append(key, requestData[key]);
-    });
+    // Validate required fields
+    if (!formData.get('type') || !formData.get('quantity')) {
+      throw new Error("Type and quantity are required");
+    }
 
     const response = await axios.post(`${API_URL}/print`, formData, {
       withCredentials: true,
@@ -65,6 +58,8 @@ export const createRequest = (requestData) => async (dispatch, getState) => {
     dispatch(setError(error.response?.data?.message || "Failed to create request"));
     toast.error(error.response?.data?.message || "Failed to create request");
     throw error;
+  } finally {
+    dispatch(setFetching(false));
   }
 };
 
@@ -91,11 +86,13 @@ export const updateRequestStatus = (requestId, status) => async (dispatch, getSt
     dispatch(setError(error.response?.data?.message || "Failed to update request status"));
     toast.error(error.response?.data?.message || "Failed to update request status");
     throw error;
+  }finally{
+    dispatch(setFetching(false));
   }
 };
 
 // Update print request details (teacher only)
-export const updateRequestDetails = (requestId, requestData) => async (dispatch, getState) => {
+export const updateRequestDetails = (requestId, formData) => async (dispatch, getState) => {
   try {
     dispatch(setFetching(true));
     const { role } = getState().auth;
@@ -104,10 +101,10 @@ export const updateRequestDetails = (requestId, requestData) => async (dispatch,
       throw new Error("Only teachers can update request details");
     }
 
-    const formData = new FormData();
-    Object.keys(requestData).forEach((key) => {
-      formData.append(key, requestData[key]);
-    });
+    // Validate required fields
+    if (!formData.get('type') || !formData.get('quantity')) {
+      throw new Error("Type and quantity are required");
+    }
 
     const response = await axios.patch(
       `${API_URL}/print/${requestId}`,
@@ -127,6 +124,8 @@ export const updateRequestDetails = (requestId, requestData) => async (dispatch,
     dispatch(setError(error.response?.data?.message || "Failed to update request"));
     toast.error(error.response?.data?.message || "Failed to update request");
     throw error;
+  }finally{
+    dispatch(setFetching(false));
   }
 };
 
@@ -150,6 +149,8 @@ export const deleteRequestById = (requestId) => async (dispatch, getState) => {
     dispatch(setError(error.response?.data?.message || "Failed to delete request"));
     toast.error(error.response?.data?.message || "Failed to delete request");
     throw error;
+  }finally{
+    dispatch(setFetching(false));
   }
 };
 

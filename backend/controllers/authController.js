@@ -218,7 +218,14 @@ export const logout = (req, res) => {
 // Verify invitation token and register user
 export const verifyInvitation = async (req, res) => {
   try {
-    const { token, email, username, password, role } = req.body;
+    const {
+      token,
+      email,
+      username,
+      password,
+      role,
+      isSubAdmin = false,
+    } = req.body;
 
     if (!token || !email || !username || !password || !role) {
       return res.status(400).json({
@@ -251,8 +258,7 @@ export const verifyInvitation = async (req, res) => {
       password: await bcrypt.hash(password, 10),
       role,
       isEmailVerified: true, // Auto-verify email since it's from invitation
-      isSubAdmin: false,
-      departmentId: [], // Initialize as empty array
+      isSubAdmin: isSubAdmin,
     };
 
     // Handle different roles and their relationships
@@ -279,7 +285,7 @@ export const verifyInvitation = async (req, res) => {
         }
 
         // Update user data for department chef
-        userData.departmentId.push(department._id);
+        userData.departmentId = department._id;
         userData.facultyId = department.facultyId;
         userData.isSubAdmin = department.isRegistered;
 
@@ -288,6 +294,16 @@ export const verifyInvitation = async (req, res) => {
         department.invitationLink = null;
         department.chefName = username;
         await department.save();
+
+        // Delete used invitation
+        const departmentInvitation = await Invitation.findOne({
+          invitationLink: token,
+          email,
+          role: "department",
+        });
+        if (departmentInvitation) {
+          await departmentInvitation.deleteOne();
+        }
         break;
 
       case "teacher":
@@ -317,7 +333,7 @@ export const verifyInvitation = async (req, res) => {
         }
 
         // Update user data for teacher
-        userData.departmentId.push(teacherDepartment._id);
+        userData.departmentId = teacherDepartment._id;
         userData.facultyId = teacherDepartment.facultyId;
 
         // Delete used invitation
@@ -371,16 +387,18 @@ export const verifyInvitation = async (req, res) => {
         }
 
         // Find faculty
-        const adminFaculty = await Faculty.findById(adminInvitation.from);
-        if (!adminFaculty) {
+        const adminFrom =
+          (await Faculty.findById(adminInvitation.from)) ||
+          (await Department.findById(adminInvitation.from));
+        if (!adminFrom) {
           return res.status(404).json({
             success: false,
-            message: "Faculty not found",
+            message: "Faculty or Department not found",
           });
         }
 
         // Update user data for admin
-        userData.facultyId = adminFaculty._id;
+        userData.facultyId = adminFrom._id;
         userData.isSubAdmin = true;
 
         // Delete used invitation

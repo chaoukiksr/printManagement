@@ -1,16 +1,13 @@
-import { Cairo } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import "../components/styles.css";
 import Navbar from "@/components/Navbar";
 import Providers from "./Providers";
 import { Toaster } from "react-hot-toast";
 import AuthChecker from "./AuthChecker";
-import Loader from "@/components/dashboard/Loader";
+import FullPageLoader from "@/components/common/FullPageLoader";
 
-const cairo = Cairo({
-  variable: "--font-cairo",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Print Management",
@@ -20,9 +17,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${cairo.variable} antialiased min-h-screen`}>
+      <body className={inter.className}>
         <Providers>
-          <Loader/>
+          <FullPageLoader />
           <AuthChecker fromDashboard={false}>
             <Navbar />
             {children}

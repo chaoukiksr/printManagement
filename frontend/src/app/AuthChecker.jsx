@@ -1,15 +1,45 @@
-'use client';
+"use client";
 import Loader from "@/components/dashboard/Loader";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "@/store/auth/authHandler";
+import { redirectBaseOnRole } from "@/utils/redirect";
+import toast from "react-hot-toast";
+import PrinterLoader from "@/components/ui/PrinterLoader";
 
-export default function AuthChecker({fromDashboard , children }) {
+export default function AuthChecker({ fromDashboard, children }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
-  const { user, isFetching } = useSelector((state) => state.auth);
+  const { user, isFetching, role } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (role) {
+      if (
+        (role === "admin" || role === "department") &&
+        (pathname.startsWith("/teacher") || pathname.startsWith("/printer"))
+      ) {
+        toast.error("You are not authorized to access this page");
+        router.push("/admin");
+      }
+      else if (
+        role === "teacher" &&
+        (pathname.startsWith("/printer") || pathname.startsWith("/admin"))
+      ) {
+        toast.error("You are not authorized to access this page");
+        router.push("/teacher");
+      }
+      else if (
+        role === "printer" &&
+        (pathname.startsWith("/teacher") || pathname.startsWith("/admin"))
+      ) {
+        toast.error("You are not authorized to access this page");
+        router.push("/printer");
+      }
+    }
+  }, [role, pathname]);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -24,9 +54,9 @@ export default function AuthChecker({fromDashboard , children }) {
       }
     };
     verifyAuth();
-  }, [dispatch, router]);
+  }, [dispatch]);
 
-  if (isFetching && fromDashboard) return <Loader />;
+  if (isFetching && fromDashboard) return <PrinterLoader />;
   if (!user && fromDashboard) return null;
   return <>{children}</>;
 }

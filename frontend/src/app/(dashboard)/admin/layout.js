@@ -1,8 +1,8 @@
 import Loader from "@/components/dashboard/Loader";
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
-import ViewReqPopup from "@/components/dashboard/ViewReqPopup";
-import AuthChecker from "../AuthChecker";
+import RequestPopup from "@/components/dashboard/RequestPopup";
+import ClientLayout from "./ClientLayout";
 
 export const metadata = {
   title: "Print Administation",
@@ -11,8 +11,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <div className="min-h-screen">
-      <AuthChecker fromDashboard={true}>
+    <ClientLayout>
+      <div className="min-h-screen">
         <Navbar />
         <div className="flex">
           <div
@@ -23,11 +23,11 @@ export default function RootLayout({ children }) {
           </div>
           <main className="flex-1">
             {children}
-            <ViewReqPopup />
+            <RequestPopup />
           </main>
         </div>
         <Loader />
-      </AuthChecker>
-    </div>
+      </div>
+    </ClientLayout>
   );
 }

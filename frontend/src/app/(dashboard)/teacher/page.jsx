@@ -1,14 +1,27 @@
 "use client";
 import Navbar from "@/components/dashboard/Navbar";
 import ReqTable from "@/components/dashboard/ReqTable";
-import ViewReqPopup from "@/components/dashboard/ViewReqPopup";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import RequestPopup from "@/components/dashboard/RequestPopup";
+import { useSelector } from "react-redux";
+import PrinterLoader from "@/components/ui/PrinterLoader";
 
 export default function page() {
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
+  const {role} = useSelector((state) => state.auth);
+
+  const handleCreateRequest = () => {
+    router.push("/teacher?mode=create");
+  };
+
+
+  if(!role) return <PrinterLoader/>;
+  if(role !== "teacher") return null;
+  
   return (
     <div className="">
       <Navbar />
@@ -21,44 +34,59 @@ export default function page() {
             style={{ width: "fit-content" }}
           >
             <div
-              className="all cursor-pointer"
+              className={`all cursor-pointer ${
+                selectedStatus !== "all" && "opacity-60"
+              }`}
               onClick={() => setSelectedStatus("all")}
             >
               All
             </div>
             <div
-              className="completed cursor-pointer"
+              className={`completed cursor-pointer ${
+                selectedStatus !== "completed" && "opacity-60"
+              }`}
               onClick={() => setSelectedStatus("completed")}
             >
               Completed
             </div>
             <div
-              className="wait_for_printer cursor-pointer"
-              onClick={() => setSelectedStatus("wait_for_printer")}
+              className={`wf_printer cursor-pointer ${
+                selectedStatus !== "wf_printer" && "opacity-60"
+              }`}
+              onClick={() => setSelectedStatus("wf_printer")}
             >
               Wait for printer
             </div>
             <div
-              className="wait_for_teacher cursor-pointer"
-              onClick={() => setSelectedStatus("wait_for_teacher")}
+              className={`wf_teacher cursor-pointer ${
+                selectedStatus !== "wf_teacher" && "opacity-60"
+              }`}
+              onClick={() => setSelectedStatus("wf_teacher")}
             >
               Wait for teacher
             </div>
             <div
-              className="in_progress cursor-pointer"
-              onClick={() => setSelectedStatus("in_progress")}
+              className={`pending cursor-pointer ${
+                selectedStatus !== "pending" && "opacity-60"
+              }`}
+              onClick={() => setSelectedStatus("pending")}
             >
-              In progress
+              Pending
             </div>
             <div
-              className="refused cursor-pointer"
+              className={`refused cursor-pointer ${
+                selectedStatus !== "refused" && "opacity-60"
+              }`}
               onClick={() => setSelectedStatus("refused")}
             >
               Refused
             </div>
           </div>
           <div className="flex justify-end flex-1">
-            <button className="btn flex items-center gap-3" onClick={() => setIsOpen(true)}>
+            <button
+              className="btn flex items-center gap-3"
+              onClick={handleCreateRequest}
+            >
               <PlusIcon className="size-6" />
               <span>New Request</span>
             </button>
@@ -67,7 +95,7 @@ export default function page() {
         <ReqTable selectedStatus={selectedStatus} />
       </div>
 
-      {isOpen && <ViewReqPopup isOpen={isOpen} closePopup={() => setIsOpen(false)}/>}
+      <RequestPopup />
     </div>
   );
 }

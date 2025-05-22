@@ -18,12 +18,16 @@ const userSchema = new mongoose.Schema({
         required : [true , "Your Password is required"],
         minlength : [8 , "Password must be at least 8 characters long"],
     },
+    image : {
+        type : String ,
+        default : "",
+    },
 
     role : {type : String , enum : ["admin" , "department" , "teacher" , "printer"] , default : "admin"},
 
 
     // for department chefs and teachers 
-    departmentId : [{type : mongoose.Schema.Types.ObjectId , ref : "Department"}],
+    departmentId : {type : mongoose.Schema.Types.ObjectId , ref : "Department"},
 
     // for faculty printers and super admins
     facultyId : {type : mongoose.Schema.Types.ObjectId , ref : "Faculty"},

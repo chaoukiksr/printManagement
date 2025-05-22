@@ -164,3 +164,67 @@ body {
     @apply bg-background text-foreground;
   }
 } */
+
+/* File Upload Styles */
+.file-upload-container {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.file-upload-area {
+  border: 2px dashed #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f9fafb;
+}
+
+.file-upload-area:hover {
+  border-color: #3b82f6;
+  background-color: #f0f9ff;
+}
+
+.file-upload-area.has-file {
+  border-style: solid;
+  border-color: #3b82f6;
+  background-color: #f0f9ff;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-preview-container {
+  @apply bg-white rounded-lg p-4;
+}
+
+.file-preview {
+  @apply flex items-center gap-3 bg-gray-50 p-3 rounded-lg;
+}
+
+.file-name {
+  @apply flex-1 text-sm truncate;
+}
+
+.view-file {
+  @apply p-1 hover:bg-gray-200 rounded-full transition-colors;
+}
+
+.remove-file {
+  @apply p-1 hover:bg-red-100 rounded-full transition-colors text-red-500;
+}
+
+.update-file {
+  @apply text-sm text-primary hover:underline;
+}
+
+/* Loading state for buttons */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
