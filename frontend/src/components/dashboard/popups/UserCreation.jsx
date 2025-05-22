@@ -5,9 +5,9 @@ import { Staatliches } from "next/font/google";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-export default function UserCreation({ status, hidePopup, role }) {
+export default function UserCreation({ status, closePopup, role }) {
   const popupRef = useRef(null);
-  useOutsideClick(popupRef, hidePopup);
+  useOutsideClick(popupRef, closePopup);
 
   const dispatch = useDispatch();
 
@@ -41,9 +41,8 @@ export default function UserCreation({ status, hidePopup, role }) {
     }
     
     // Reset form data after submission
-    hidePopup();
+    closePopup();
   };
-
 
   if (!status) return null;
 
@@ -77,7 +76,7 @@ export default function UserCreation({ status, hidePopup, role }) {
           <div className="cta flex w-full items-center gap-3 mt-4 flex-wrap-reverse">
             <button
               className="btn-gray flex-grow-1 w-50"
-              onClick={() => hidePopup()}
+              onClick={closePopup}
             >
               Cancel
             </button>

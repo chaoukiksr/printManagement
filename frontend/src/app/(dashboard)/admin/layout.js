@@ -1,7 +1,5 @@
-import Loader from "@/components/dashboard/Loader";
-import Navbar from "@/components/dashboard/Navbar";
-import Sidebar from "@/components/dashboard/Sidebar";
-import RequestPopup from "@/components/dashboard/RequestPopup";
+import Navbar from "@/components/dashboard/layout/Navbar";
+import Sidebar from "@/components/dashboard/layout/Sidebar";
 import ClientLayout from "./ClientLayout";
 
 export const metadata = {
@@ -23,10 +21,8 @@ export default function RootLayout({ children }) {
           </div>
           <main className="flex-1">
             {children}
-            <RequestPopup />
           </main>
         </div>
-        <Loader />
       </div>
     </ClientLayout>
   );

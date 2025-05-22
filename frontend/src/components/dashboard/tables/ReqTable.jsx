@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ReqItem from "./ReqItem";
+import ReqItem from "@/components/dashboard/ReqItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getRequests, getRequestDetails } from "@/store/request/requestHandler";
 import {
@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import ButtonLoader from "../ui/ButtonLoader";
+import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function ReqTable({ selectedStatus }) {
   const { role } = useSelector((state) => state.auth);

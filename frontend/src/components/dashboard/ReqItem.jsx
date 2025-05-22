@@ -11,7 +11,8 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import DeletePopup from "./DeletePopup";
+import DeletePopup from "@/components/dashboard/popups/DeletePopup";
+
 
 export default function ReqItem({ item }) {
   const { role } = useSelector((state) => state.auth);
@@ -33,8 +34,8 @@ export default function ReqItem({ item }) {
   return (
     <>
       <tr
-        className={`bg-white border-t border-gray-300 cursor-pointer transition-all duration-100 ${
-          pathname !== "/admin" && "hover:scale-101"
+        className={`bg-white border-t border-gray-300  transition-all duration-100 ${
+          pathname !== "/admin" && role !== "admin" && "hover:scale-101 cursor-pointer"
         }`}
         onClick={handleRequestClick}
       >

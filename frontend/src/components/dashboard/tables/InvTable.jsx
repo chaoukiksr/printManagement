@@ -2,7 +2,7 @@ import { deleteInvitation, getInvitations } from "@/store/invitation/invitationH
 import { TrashIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import DeletePopup from "./DeletePopup";
+import DeletePopup from "@/components/dashboard/popups/DeletePopup";
 
 export default function InvTable() {
   const { invitations } = useSelector((state) => state.invitations);

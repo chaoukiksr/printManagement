@@ -22,10 +22,26 @@ export const getRequests = () => async (dispatch, getState) => {
       withCredentials: true,
     });
 
-    dispatch(setRequests(response.data.data));
+    // Define status priority order
+    const statusPriority = {
+      'pending': 1,
+      'wf_printer': 2,
+      'wf_teacher': 3,
+      'completed': 4,
+      'refused': 5
+    };
+
+    // Sort requests based on status priority
+    const sortedRequests = response.data.data.sort((a, b) => {
+      return statusPriority[a.status] - statusPriority[b.status];
+    });
+
+    dispatch(setRequests(sortedRequests));
   } catch (error) {
     dispatch(setError(error.response?.data?.message || "Failed to fetch requests"));
     toast.error(error.response?.data?.message || "Failed to fetch requests");
+  } finally {
+    dispatch(setFetching(false));
   }
 };
 

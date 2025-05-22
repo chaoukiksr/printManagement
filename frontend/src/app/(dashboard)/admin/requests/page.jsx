@@ -1,5 +1,5 @@
 "use client";
-import ReqTable from "@/components/dashboard/ReqTable";
+import ReqTable from "@/components/dashboard/tables/ReqTable";
 import React, { useState } from "react";
 
 export default function page() {

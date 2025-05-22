@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingButton from "@/components/ui/LoadingButton";
 import toast from "react-hot-toast";
 
-export default function DepCreation({ hidePopup, status, item }) {
+export default function DepCreation({ status, closePopup, item }) {
   const { user } = useSelector(state => state.auth);
   const popupRef = useRef(null);
   const dispatch = useDispatch();
-  useOutsideClick(popupRef, hidePopup);
+  useOutsideClick(popupRef, closePopup);
 
   // Function to stop scrolling when the popup is open
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function DepCreation({ hidePopup, status, item }) {
         chefEmail: "",
         facultyId: user.facultyId,
       });
-      hidePopup(); // Close the popup after successful creation/update
+      closePopup(); // Close the popup after successful creation/update
     } catch (error) {
       // Error is already handled in the handler with toast
       console.error("Department operation failed:", error);
@@ -85,8 +85,9 @@ export default function DepCreation({ hidePopup, status, item }) {
   };
 
   if (!status) return null;
+
   return (
-    <div className={`popup ananhawes3lik`}>
+    <div className={`popup`}>
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
         <h3 className="text-xl font-bold text-center mb-7">
           {item ? "Update Department" : "Department Creation"}
@@ -128,7 +129,7 @@ export default function DepCreation({ hidePopup, status, item }) {
             <button
               type="button"
               className="btn-gray flex-grow-1 w-50"
-              onClick={hidePopup}
+              onClick={closePopup}
               disabled={isSubmitting}
             >
               Cancel

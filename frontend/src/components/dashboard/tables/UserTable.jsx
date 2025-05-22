@@ -6,7 +6,6 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
-import DeletePopup from "./DeletePopup";
 import {
   deleteUser,
   getPrinter,
@@ -15,6 +14,7 @@ import {
 } from "@/store/user/userHandler";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import DeletePopup from "../popups/DeletePopup";
 
 export default function UserTable({ role }) {
   const dispatch = useDispatch();

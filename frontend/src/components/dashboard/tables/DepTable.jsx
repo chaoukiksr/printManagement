@@ -10,9 +10,10 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Badge from "../ui/Badge";
-import DepCreation from "./DepCreation";
-import DeletePopup from "./DeletePopup";
+import Badge from "@/components/ui/Badge";
+import DepCreation from "@/components/dashboard/popups/DepCreation";
+import DeletePopup from "@/components/dashboard/popups/DeletePopup";
+import PrinterLoader from "@/components/ui/PrinterLoader";
 
 export default function DepTable() {
   const pathname = usePathname();
@@ -40,6 +41,9 @@ export default function DepTable() {
     setSelectedDep(dep);
     setIsDeleteOpen(true);
   };
+
+  if (isFetching) return <PrinterLoader />;
+  if (departments && departments.length === 0) return <div className="text-center text-gray-400">There is no admin in your system</div>;
 
   const tableComponent = () => (
     <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
@@ -133,7 +137,7 @@ export default function DepTable() {
   return (
     <>
       {tableComponent()}
-      <DepCreation status={isUpdateOpen} item={selectedDep} hidePopup={() => setIsUpdateOpen(false)}/>
+      <DepCreation status={isUpdateOpen} item={selectedDep} closePopup={() => setIsUpdateOpen(false)}/>
       <DeletePopup 
         status={isDeleteOpen} 
         onDelete={() => {

@@ -1,10 +1,8 @@
 "use client";
-import Loader from "@/components/dashboard/Loader";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuth } from "@/store/auth/authHandler";
-import { redirectBaseOnRole } from "@/utils/redirect";
 import toast from "react-hot-toast";
 import PrinterLoader from "@/components/ui/PrinterLoader";
 

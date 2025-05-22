@@ -11,11 +11,10 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
 import { HomeIcon, UserIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import Notification from "./Notification";
+import Notification from "@/components/dashboard/Notification";
 import { getNotification } from "@/store/notification/notificationHandler";
 import { requests } from "@/testdata";
 import Image from "next/image";
@@ -30,7 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/store/auth/authHandler";
 import toast from "react-hot-toast";
-import PrinterLoader from "../ui/PrinterLoader";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);

@@ -3,7 +3,7 @@
 import { useOutsideClick } from "@/utils/outSideClick";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import ReqForm from "./ReqForm";
+import ReqForm from "@/components/dashboard/ReqForm";
 import { stopScroll } from "@/utils/stopScroll";
 import { useDispatch, useSelector } from "react-redux";
 import { getRequestDetails } from "@/store/request/requestHandler";
@@ -22,11 +22,13 @@ export default function RequestPopup() {
   const requestId = searchParams.get("id");
 
   const [isOpen, setIsOpen] = useState(false);
+  const closePopup = () => {
+    setIsOpen(false);
+    router.replace(pathname);
+  };
 
   // Handle outside click
-  useOutsideClick(popupRef, () => {
-    closePopup();
-  });
+  useOutsideClick(popupRef, closePopup);
 
   // Handle scroll lock
   useEffect(() => {
@@ -48,11 +50,6 @@ export default function RequestPopup() {
       setIsOpen(false);
     }
   }, [mode, requestId, dispatch]);
-
-  const closePopup = () => {
-    router.replace(pathname);
-    setIsOpen(false);
-  };
 
   if (!isOpen) return null;
 

@@ -1,11 +1,12 @@
 "use client";
 import DashCta from "@/components/dashboard/DashCta";
-import DepCreation from "@/components/dashboard/DepCreation";
+import DepCreation from "@/components/dashboard/popups/DepCreation";
 import PaperChart from "@/components/dashboard/PaperChart";
-import ReqTable from "@/components/dashboard/ReqTable";
-import UserCreation from "@/components/dashboard/UserCreation";
+import ReqTable from "@/components/dashboard/tables/ReqTable";
+import UserCreation from "@/components/dashboard/popups/UserCreation";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import PrinterLoader from "@/components/ui/PrinterLoader";
 
 export default function Home() {
   const [showPopup, setShowPopup] = useState({
@@ -23,37 +24,42 @@ export default function Home() {
         <div className="flex flex-wrap xl:block">
           <DashCta
             text={
-              "Create the deparments of your print mangment system so each one will have its own teachers"
+              role === "admin"
+                ? "Create the deparments of your print mangment system so each one will have its own teachers"
+                : "Invite new teachers to your department"
             }
             btnClass={"btn"}
-            btn={"Create new department"}
+            btn={role === "admin" ? `Create new department` : `Invite new teacher`}
             img={"/assets/dep.png"}
             action={() => setShowPopup({ ...showPopup, depCreation: true })}
           />
           <DashCta
-            text={"Create the print admin of your print mangment system "}
+            text={
+              role === "admin"
+                ? "Create the print admin of your print mangment system so each one will have its own printers"
+                : "Invite admin to help you manage your department"
+            }
             btnClass={"btn-outline"}
-            btn={"Create new printer"}
+            btn={role === "admin" ? `Create new printer` : `Invite new admin`}
             img={"/assets/print.png"}
             action={() => setShowPopup({ ...showPopup, userCreation: true })}
           />
         </div>
       </div>
       <ReqTable selectedStatus={"all"} />
-
-      <DepCreation
-        status={showPopup.depCreation}
-        hidePopup={() =>
-          setShowPopup((prev) => ({ ...prev, depCreation: false }))
-        }
-      />
-      <UserCreation
-        status={showPopup.userCreation}
-        hidePopup={() =>
-          setShowPopup((prev) => ({ ...prev, userCreation: false }))
-        }
-        role={"printer"}
-      />
+      {showPopup.depCreation && (
+        <DepCreation
+          status={showPopup.depCreation}
+          closePopup={() => setShowPopup({ ...showPopup, depCreation: false })}
+        />
+      )}
+      {showPopup.userCreation && (
+        <UserCreation
+          status={showPopup.userCreation}
+          closePopup={() => setShowPopup({ ...showPopup, userCreation: false })}
+          role="printer"
+        />
+      )}
     </div>
   );
 }

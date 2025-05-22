@@ -4,7 +4,7 @@ import { stopScroll } from "@/utils/stopScroll";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import ButtonLoader from "../ui/ButtonLoader";
+import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function DeletePopup({ status , onDelete , title , closePopup}) {
   const router = useRouter();
