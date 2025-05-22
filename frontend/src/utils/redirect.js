@@ -1,9 +1,12 @@
 import { removeLoading, setLoading } from "@/store/LoaderSlice";
 import toast from "react-hot-toast";
 
-export const redirectBaseOnRole = (role, router , dispatch) => {
+export const redirectBaseOnRole = (role, router, dispatch = null) => {
   try {
-    dispatch(setLoading());
+    if (dispatch) {
+      dispatch(setLoading());
+    }
+    
     if (role === "admin" || role === "department") {
       router.push("/admin");
     } else if (role === "teacher") {
@@ -13,7 +16,9 @@ export const redirectBaseOnRole = (role, router , dispatch) => {
     }  
   } catch (error) {
     toast.error(error.response?.data.message || "Failed to redirect");
-  }finally {
-    dispatch(removeLoading());
+  } finally {
+    if (dispatch) {
+      dispatch(removeLoading());
+    }
   }
 };

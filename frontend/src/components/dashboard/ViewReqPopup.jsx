@@ -6,13 +6,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReqForm from "./ReqForm";
 import { stopScroll } from "@/utils/stopScroll";
+import { useDispatch, useSelector } from "react-redux";
+import { getRequestDetails } from "@/store/request/requestHandler";
 
-export default function ViewReqPopup() {
+export default function ViewReqPopup({isOpen, closePopup}) {
+  const { requests } = useSelector((state) => state.request);
+  const { role } = useSelector((state) => state.auth);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const popupRef = useRef(null);
   useOutsideClick(popupRef, () => {
     router.replace(pathname);
+    closePopup();
     setStatus(false);
   });
 
@@ -20,37 +26,48 @@ export default function ViewReqPopup() {
   const searchParams = useSearchParams();
   const reqId = searchParams.get("viewReq");
 
+
   const [req, setReq] = useState({});
   const [status, setStatus] = useState(false);
 
   useEffect(() => {
     stopScroll(status);
+    if(isOpen){
+      setStatus(true);
+    }
 
     return () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("scroll", stopScroll);
     };
-  }, [status]);
+  }, [status , isOpen]);
 
   useEffect(() => {
     if (reqId) {
-      const req = requests.find((req) => req._id == reqId);
-      if (req) {
-        setReq(req);
+      const res = dispatch(getRequestDetails(reqId));
+      if (res.payload) {
+        setReq(res.payload);
         setStatus(true);
-      } else {
-        console.log("Request not found");
       }
-    }
-  }, [reqId]);
+    }else{
+      setReq({
+        type: "",
+        quantity: "",
+        description: "",
+        file: "",
+      });
 
-  if (!reqId || !status) return null;
+        setStatus(isOpen);
+    }
+  }, [isOpen]);
+
+  if (!status) return null;
   return (
     <div className="popup">
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
         <h3 className="font-bold text-xl">Request information</h3>
 
-        <ReqForm reqData={req} />
+        <ReqForm reqData={reqId ? req : null} />
 
         {req.status === "in_progress" && (
           <div className="cta flex flex-wrap items-center gap-3 mt-3">

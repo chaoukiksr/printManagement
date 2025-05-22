@@ -97,7 +97,7 @@ export default function ReqForm({ reqData }) {
           /> */}
 
           <p className="text-gray-400">
-            {reqData.file
+            {reqData?.file
               ? "Please Open the file."
               : "File is not uploaded"}
           </p>

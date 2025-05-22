@@ -40,7 +40,7 @@ export default function Home() {
 
 
       <DepCreation status={showPopup.depCreation} hidePopup={()=> setShowPopup((prev)=> ({...prev , depCreation : false}))} />
-      <UserCreation status={showPopup.userCreation} hidePopup={()=> setShowPopup((prev)=> ({...prev , userCreation : false}))} />
+      <UserCreation status={showPopup.userCreation} hidePopup={()=> setShowPopup((prev)=> ({...prev , userCreation : false}))} role={"printer"}/>
     </div>
   );
 }

@@ -1,19 +1,19 @@
 import express from "express";
-import { register, verifyOTP, login, logout, verifyInvitation, checkAuth, getProfile, resendOTP } from "../controllers/authController.js";
+import * as authController from "../controllers/authController.js";
 import { checkEmailVerification, checkRole } from "../utils/middelwares/auth.js";
 
 const router = express.Router();
 
 // Public routes (no authentication required)
-router.post("/register", register);
-router.post("/verify-otp", verifyOTP);
-router.post("/resend-otp", resendOTP);
-router.post("/verify-invitation", verifyInvitation);
-router.post("/login", checkEmailVerification, login);
-router.post("/logout", logout);
+router.post("/register", authController.register);
+router.post("/verify-otp", authController.verifyOTP);
+router.post("/resend-otp", authController.resendOTP);
+router.post("/verify-invitation", authController.verifyInvitation);
+router.post("/login", checkEmailVerification, authController.login);
+router.post("/logout", authController.logout);
 
 // Protected routes (authentication required)
-router.get("/check", checkAuth);
-router.get("/profile", checkRole(["admin", "department", "teacher", "printer"]), getProfile);
+router.get("/check", authController.checkAuth);
+router.get("/profile", checkRole(["admin", "department", "teacher", "printer"]), authController.getProfile);
 
 export default router;

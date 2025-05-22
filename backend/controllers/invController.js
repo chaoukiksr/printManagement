@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import Faculty from "../models/Faculty.js";
 import Invitation from "../models/Invitations.js";
 import { emailSender } from "../utils/email/emailSender.js";
-import { departmentInvitationTemplate } from "../utils/email/emailTemplates.js";
+import { createInvitationTemplate } from "../utils/email/emailTemplates.js";
 import crypto from "crypto";
 
 // Create invitation (for teachers, printers, and admins)
@@ -94,17 +94,8 @@ export const createInvitation = async (req, res) => {
     // Send invitation email
     await emailSender({
       email,
-      subject: `${
-        role.charAt(0).toUpperCase() + role.slice(1)
-      } Invitation - Print Management System`,
-      html: `
-                <h1>${
-                  role.charAt(0).toUpperCase() + role.slice(1)
-                } Invitation</h1>
-                <p>You have been invited to join ${entityName} as a ${role}.</p>
-                <p>Click the link below to register:</p>
-                <a href="${invitationLink}">Accept Invitation</a>
-            `,
+      subject: `${role.charAt(0).toUpperCase() + role.slice(1)} Invitation - Print Management System`,
+      html: createInvitationTemplate(role, entityName, invitationLink),
     });
 
     res.status(201).json({

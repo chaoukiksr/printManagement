@@ -31,9 +31,9 @@ export default function Login() {
   // check the user if already logged in
   useEffect(()=>{
     if(existingUser){
-      redirectBaseOnRole(existingUser.role, router);
+      redirectBaseOnRole(existingUser.role, router, dispatch);
     }
-  },[existingUser]);
+  },[existingUser, router, dispatch]);
 
 
   const handleSubmit = async (e) => {
@@ -42,7 +42,7 @@ export default function Login() {
     
     if(res.data){
       toast.success("You have successfully logged in");
-      redirectBaseOnRole(res.data.role, router , dispatch);
+      redirectBaseOnRole(res.data.role, router, dispatch);
     }else {
       toast.success("Please verify your email !");
       router.push(`/register/verify?email=${user.email}`);
