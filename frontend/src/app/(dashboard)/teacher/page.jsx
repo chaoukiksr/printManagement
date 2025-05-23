@@ -4,7 +4,6 @@ import ReqTable from "@/components/dashboard/tables/ReqTable";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import RequestPopup from "@/components/dashboard/popups/RequestPopup";
 import { useSelector } from "react-redux";
 import PrinterLoader from "@/components/ui/PrinterLoader";
 
@@ -23,7 +22,6 @@ export default function page() {
   
   return (
     <div className="">
-      <Navbar />
       <div className="container m-auto mt-[60px] px-4">
         <div className="flex items-center justify-between">
           <h3 className="text-3xl font-bold">Requests</h3>
@@ -76,8 +74,6 @@ export default function page() {
         </div>
         <ReqTable selectedStatus={selectedStatus} />
       </div>
-
-      <RequestPopup />
     </div>
   );
 }

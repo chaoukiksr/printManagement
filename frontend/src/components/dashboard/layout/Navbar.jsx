@@ -8,9 +8,10 @@ import {
   DocumentIcon,
   UserCircleIcon,
   XMarkIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { HomeIcon, UserIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +19,7 @@ import Notification from "@/components/dashboard/Notification";
 import { getNotification } from "@/store/notification/notificationHandler";
 import { requests } from "@/testdata";
 import Image from "next/image";
+import { setSearchQuery } from "@/store/request/requestSlice";
 
 import {
   DropdownMenu,
@@ -36,10 +38,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { num } = useSelector((state) => state.notification);
-
   const { role, user } = useSelector((state) => state.auth);
-
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (requests && Array.isArray(requests)) {
       dispatch(getNotification(requests));
@@ -49,12 +50,12 @@ export default function Navbar() {
   // Prevent scrolling when sidebar is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -66,16 +67,21 @@ export default function Navbar() {
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const sidebar = document.querySelector('.sidebar');
-      const trigger = document.querySelector('.sidebar-trigger');
-      if (isOpen && sidebar && !sidebar.contains(event.target) && !trigger?.contains(event.target)) {
+      const sidebar = document.querySelector(".sidebar");
+      const trigger = document.querySelector(".sidebar-trigger");
+      if (
+        isOpen &&
+        sidebar &&
+        !sidebar.contains(event.target) &&
+        !trigger?.contains(event.target)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
@@ -99,7 +105,11 @@ export default function Navbar() {
         </div>
         <div className="photo">
           <Image
-            src={(user && user.image) || "/assets/default-avatar.jpg"}
+            src={
+              user.image
+                ? `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.image}`
+                : "/assets/default-avatar.jpg"
+            }
             alt="user"
             width={40}
             height={40}
@@ -113,7 +123,11 @@ export default function Navbar() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="my-2" />
         <DropdownMenuItem
-          onClick={() => router.push("/profile")}
+          onClick={() =>
+            router.push(
+              role === "teacher" ? "/teacher/profile" : "/printer/profile"
+            )
+          }
           className="flex items-center gap-3 px-2 py-2.5 text-base cursor-pointer hover:bg-gray-100 rounded-lg transition-colors"
         >
           <UserCircleIcon className="size-5 text-gray-600" />
@@ -131,33 +145,52 @@ export default function Navbar() {
   );
 
   const AccountButton = () => (
-    <div className="account flex items-center gap-3 cursor-pointer">
-      <div className="username text-lg font-medium">
-        {user && user.username}
+    <Link href={"/admin/profile"}>
+      <div className="account flex items-center gap-3 cursor-pointer">
+        <div className="username text-lg font-medium">
+          {user && user.username}
+        </div>
+        <div className="photo">
+          <Image
+            src={(user && user.image) || "/assets/default-avatar.jpg"}
+            alt="user"
+            width={40}
+            height={40}
+            className="rounded-full border-2 border-gray-200"
+          />
+        </div>
       </div>
-      <div className="photo">
-        <Image
-          src={(user && user.image) || "/assets/default-avatar.jpg"}
-          alt="user"
-          width={40}
-          height={40}
-          className="rounded-full border-2 border-gray-200"
-        />
-      </div>
-    </div>
+    </Link>
   );
 
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    dispatch(setSearchQuery(search));
+  }, [search, dispatch]);
 
-  if(!role) return null;
+  if (!role) return null;
   const showSidebar = role === "admin" || role === "department";
 
   return (
     <>
-      <div className={`navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[15px] z-50 ${(role !== "admin" && role !== "department") && "lg:container"}`}>
-        <div className={`items-center justify-between z-50  ${showSidebar ? "hidden md:flex" : "flex"}`}>
-          <Link href={"/"}>
-            <h3 className="text-3xl font-bold">Name</h3>
-          </Link>
+      <div
+        className={`navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[15px] z-50 ${
+          role !== "admin" && role !== "department" && "lg:container"
+        }`}
+      >
+        <div
+          className={`items-center justify-between z-50  ${
+            showSidebar ? "hidden md:flex" : "flex"
+          }`}
+        >
+          <div className="flex items-center gap-6">
+            <Link href={"/"}>
+              <h3 className="text-3xl font-bold">Name</h3>
+            </Link>
+            {role === "printer" && pathname === "/printer" && (
+              <SearchBar search={search} setSearch={setSearch} />
+            )}
+          </div>
           <div className="cta flex gap-6 items-center">
             {role === "department" && (
               <div className="relative">
@@ -178,7 +211,7 @@ export default function Navbar() {
                 <Notification status={bellStatus} />
               </div>
             )}
-            {(role === "teacher" || role === "printer") ? (
+            {role === "teacher" || role === "printer" ? (
               <AccountDropdown />
             ) : (
               <AccountButton />
@@ -186,8 +219,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        {
-          showSidebar && (<div className="md:hidden z-50">
+        {showSidebar && (
+          <div className="md:hidden z-50">
             <div className="flex items-center justify-between z-50">
               <Link href={"/"}>
                 <h3 className="text-2xl font-bold">Name</h3>
@@ -226,8 +259,8 @@ export default function Navbar() {
                 )}
               </div>
             </div>
-          </div>)
-        }
+          </div>
+        )}
       </div>
 
       {showSidebar && (
@@ -321,3 +354,20 @@ export default function Navbar() {
     </>
   );
 }
+
+const SearchBar = ({ search, setSearch }) => {
+  return (
+    <div className="hidden md:block relative">
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search by teacher name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-[300px] pl-10 pr-4 py-2 rounded-lg border border-gray-200 "
+        />
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
+      </div>
+    </div>
+  );
+};

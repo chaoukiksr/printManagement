@@ -2,18 +2,24 @@
 import React, { useEffect, useState } from "react";
 import ReqItem from "@/components/dashboard/ReqItem";
 import { useDispatch, useSelector } from "react-redux";
-import { getRequests, getRequestDetails } from "@/store/request/requestHandler";
+import {
+  getRequests,
+  getRequestDetails,
+  deleteRequestById,
+} from "@/store/request/requestHandler";
 import {
   AdjustmentsVerticalIcon,
   DocumentIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import ButtonLoader from "@/components/ui/ButtonLoader";
+import DeletePopup from "../popups/DeletePopup";
 
 export default function ReqTable({ selectedStatus }) {
   const { role } = useSelector((state) => state.auth);
-  const { requests, isFetching } = useSelector((state) => state.request);
+  const { requests, isFetching, searchQuery } = useSelector((state) => state.request);
   const dispatch = useDispatch();
   const [filtredReq, setFiltredReq] = useState([]);
   const pathname = usePathname();
@@ -24,23 +30,36 @@ export default function ReqTable({ selectedStatus }) {
     dispatch(getRequests());
   }, [dispatch]);
 
-  // Update filtered requests when requests or selectedStatus changes
+  // Update filtered requests when requests, selectedStatus, or searchQuery changes
   useEffect(() => {
     if (!requests) return;
 
-    if (selectedStatus === "all") {
-      setFiltredReq(requests);
-    } else {
-      const filtered = requests.filter((req) => req.status === selectedStatus);
-      setFiltredReq(filtered);
+    let filtered = requests;
+
+    // Apply status filter
+    if (selectedStatus !== "all") {
+      filtered = filtered.filter((req) => req.status === selectedStatus);
     }
-  }, [selectedStatus, requests]);
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter((req) =>
+        req.user?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFiltredReq(filtered);
+  }, [selectedStatus, requests, searchQuery]);
 
   // Handle request click
   const handleRequestClick = (requestId) => {
     if (role === "admin") return;
     router.push(`${pathname}?mode=view&id=${requestId}`);
   };
+
+  // delete handling
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   if (isFetching) {
     return (
@@ -49,21 +68,19 @@ export default function ReqTable({ selectedStatus }) {
       </div>
     );
   }
-  if (requests && requests.length === 0){
+  if (requests && requests.length === 0) {
     return (
       <div className="flex justify-center items-center p-8">
         <p className="text-gray-400">No requests found</p>
       </div>
-    )
+    );
   }
 
   const tableComponent = () => (
-    <div
-      className={`border border-gray-300 rounded-lg m-4 shadow-2xl ${
-        pathname === "/admin" &&
-        "hover:scale-101 transition-all duration-200 cursor-pointer"
-      }`}
-    >
+    <div className={`border border-gray-300 rounded-lg m-4 shadow-2xl ${
+      pathname === "/admin" &&
+      "hover:scale-101 transition-all duration-200 cursor-pointer"
+    }`}>
       {isFetching ? (
         <div className="flex justify-center items-center p-8">
           <ButtonLoader />
@@ -73,8 +90,10 @@ export default function ReqTable({ selectedStatus }) {
           <table className="w-full p-3 hidden md:table">
             <thead>
               <tr>
-                {(role === "admin" || role === "printer") && <th>Department</th>}
-                <th>{role === "teacher" ? 'Date' : 'Teacher'}</th>
+                {(role === "admin" || role === "printer") && (
+                  <th>Department</th>
+                )}
+                <th>{role === "teacher" ? "Date" : "Teacher"}</th>
                 <th>Type</th>
                 <th>Quantity</th>
                 <th>Status</th>
@@ -89,33 +108,41 @@ export default function ReqTable({ selectedStatus }) {
           </table>
 
           {/* Mobile version */}
-          <div className="w-full p-3 md:hidden bg-white shadow-xl rounded-lg">
-            {filtredReq.map((item) => (
+          <div className="w-full p-3 md:hidden bg-white">
+            {filtredReq.map((item, index) => (
               <div
                 key={item._id}
                 className="pt-3 flex flex-col gap-3 relative"
                 onClick={() => handleRequestClick(item._id)}
-                style={{
-                  cursor: role !== "admin" && "url(/view.svg) , pointer",
-                }}
               >
-                {role === "department" && (
-                  <div className="absolute right-[2%]">
-                    <AdjustmentsVerticalIcon className="size-7 cursor-pointer circle" />
+                {(role === "admin" || role === "printer") && (
+                  <div className="flex items-center px-4">
+                    <span className="flex-1 font-bold">Department</span>
+                    <span className="text-gray-400 flex-1">
+                      {item.departmentName}
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center px-4">
-                  <span className="flex-1 font-bold">Teacher</span>
-                  <div className="account flex-1 flex items-center gap-2">
-                    <div className="photo">
-                      <img
-                        src={item.user?.image || "/default-avatar.png"}
-                        alt=""
-                        className="border-black w-[30px] h-[30px] rounded-full"
-                      />
+                  <span className="flex-1 font-bold">
+                    {role === "teacher" ? "Date" : "Teacher"}
+                  </span>
+                  {role === "teacher" ? (
+                    <span className="flex-1">
+                      {item.createdAt.split("T")[0]}
+                    </span>
+                  ) : (
+                    <div className="account flex-1 flex items-center gap-2">
+                      <div className="photo">
+                        <img
+                          src={item.user?.image || "/assets/default-avatar.jpg"}
+                          alt=""
+                          className="border-black w-[30px] h-[30px] rounded-full"
+                        />
+                      </div>
+                      <div className="username">{item.user?.name}</div>
                     </div>
-                    <div className="username">{item.user?.name}</div>
-                  </div>
+                  )}
                 </div>
                 <div className="flex items-center px-4">
                   <span className="flex-1 font-bold">Type</span>
@@ -140,12 +167,43 @@ export default function ReqTable({ selectedStatus }) {
                     </span>
                   </div>
                 </div>
+                {role !== "admin" && (
+                  <div className="flex items-center px-4 justify-end gap-2">
+                    <AdjustmentsVerticalIcon className="size-7 cursor-pointer circle" />
+                    {role === "teacher" && (
+                      <TrashIcon
+                        className="size-7 cursor-pointer circle"
+                        onClick={() => {
+                          setSelectedItem(item._id);
+                          setIsDeleting(true);
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
 
-                <div className="border border-gray-300 mt-3"></div>
+                {index !== filtredReq.length - 1 && (
+                  <div className="border-t border-gray-200"></div>
+                )}
               </div>
             ))}
           </div>
         </>
+      )}
+
+      {isDeleting && (
+        <DeletePopup
+          status={isDeleting}
+          closePopup={() => {
+            setIsDeleting(false);
+          }}
+          title="Are you sure you want to delete this request?"
+          onDelete={() => {
+            dispatch(deleteRequestById(selectedItem));
+            setIsDeleting(false);
+            setSelectedItem(null);
+          }}
+        />
       )}
     </div>
   );

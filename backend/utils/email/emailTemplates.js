@@ -349,3 +349,121 @@ export const createInvitationTemplate = (role, entityName, invitationLink) => {
     </html>
     `;
 };
+
+export const printRequestUpdateTemplate = (username, requestDetails, queuePosition = null) => {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Print Request Update</title>
+        <style>
+            body {
+                font-family: 'Cairo', Arial, sans-serif;
+                line-height: 1.6;
+                color: #3f5d6d;
+                margin: 0;
+                padding: 0;
+                background-color: #c4eeec;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 0;
+                background-color: #edfaf9;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                background-color: #3f5d6d;
+                color: #edfaf9;
+                padding: 30px 20px;
+                text-align: center;
+                border-radius: 20px 20px 0 0;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 600;
+            }
+            .content {
+                padding: 30px;
+                background-color: #edfaf9;
+            }
+            .request-details {
+                background-color: #E1F7F5;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 25px 0;
+            }
+            .status-badge {
+                display: inline-block;
+                padding: 8px 16px;
+                background-color: #3f5d6d;
+                color: #edfaf9;
+                border-radius: 8px;
+                font-weight: 500;
+                margin: 10px 0;
+            }
+            .queue-info {
+                background-color: #E1F7F5;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 25px 0;
+                text-align: center;
+            }
+            .message {
+                color: #3f5d6d;
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px;
+                background-color: #E1F7F5;
+                color: #9faeb6;
+                font-size: 14px;
+                border-top: 1px solid #cfd7db;
+            }
+            .highlight {
+                color: #3f5d6d;
+                font-weight: 600;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Print Request Update</h1>
+            </div>
+            <div class="content">
+                <p class="message">Hello <span class="highlight">${username}</span>,</p>
+                <p class="message">Your print request has been updated:</p>
+                
+                <div class="request-details">
+                    <p><strong>Request Type:</strong> ${requestDetails.type}</p>
+                    <p><strong>Quantity:</strong> ${requestDetails.quantity}</p>
+                    <p><strong>Description:</strong> ${requestDetails.description || 'N/A'}</p>
+                    <p><strong>New Status:</strong> <span class="status-badge">${requestDetails.status === "wf_teacher" ? "Waiting for You " : requestDetails.status === "wf_printer" ? "Waiting for Printer" : requestDetails.status}</span></p>
+                </div>
+
+                ${queuePosition ? `
+                <div class="queue-info">
+                    <p class="message">Queue Information:</p>
+                    <p class="message">There are <span class="highlight">${queuePosition.wfPrinter}</span> requests with "Waiting for Printer" status</p>
+                    <p class="message">and <span class="highlight">${queuePosition.wfTeacher}</span> requests with "Waiting for Teacher" status</p>
+                    <p class="message">ahead of your request for today.</p>
+                </div>
+                ` : ''}
+                
+                <p class="message">Best regards,<br>Print Management Team</p>
+            </div>
+            <div class="footer">
+                <p>This is an automated message, please do not reply to this email.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};

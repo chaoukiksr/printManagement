@@ -1,5 +1,9 @@
 import PrintRequest from "../models/PrintRequest.js";
 import Department from "../models/Department.js";
+import { emailSender } from "../utils/email/emailSender.js";
+import { printRequestUpdateTemplate } from "../utils/email/emailTemplates.js";
+import fs from 'fs';
+import path from 'path';
 
 // Create print request (for teachers)
 export const createPrintRequest = async (req, res) => {
@@ -20,7 +24,8 @@ export const createPrintRequest = async (req, res) => {
             user: {
                 id: req.user._id,
                 name: req.user.username,
-                image: req.user.image
+                image: req.user.image,
+                email: req.user.email
             },
             departmentId: req.user.departmentId,
             departmentName: userDepartment.name,
@@ -44,6 +49,20 @@ export const createPrintRequest = async (req, res) => {
             message: "Error creating print request",
             error: error.message
         });
+    }
+};
+
+// Helper function to delete file
+const deleteFile = (filePath) => {
+    if (filePath) {
+        try {
+            const resolvedPath = path.resolve(filePath);
+            if (fs.existsSync(resolvedPath)) {
+                fs.unlinkSync(resolvedPath);
+            }
+        } catch (error) {
+            console.error("Error deleting file:", error);
+        }
     }
 };
 
@@ -84,8 +103,12 @@ export const updatePrintRequest = async (req, res) => {
         
         // Handle file updates
         if (file) {
+            // Delete old file if exists
+            deleteFile(printRequest.file);
             updateData.file = file;
         } else if (removeFile) {
+            // Delete file if user wants to remove it
+            deleteFile(printRequest.file);
             updateData.file = null;
         }
 
@@ -127,7 +150,7 @@ export const updateStatus = async (req, res) => {
 
         // Validate status transitions based on user role
         if (req.user.role === "department") {
-            if (!["refused", "wf_printer"].includes(status)) {
+            if (!["refused", "wf_printer", "wf_teacher"].includes(status)) {
                 return res.status(400).json({
                     success: false,
                     message: "Invalid status for department"
@@ -161,11 +184,65 @@ export const updateStatus = async (req, res) => {
             });
         }
 
+        // Delete file if status is completed
+        if (status === "completed" && printRequest.file) {
+            deleteFile(printRequest.file);
+        }
+
         const updatedRequest = await PrintRequest.findByIdAndUpdate(
             id,
-            { status },
+            { 
+                status,
+                ...(status === "completed" ? { file: null } : {})
+            },
             { new: true, runValidators: true }
         );
+
+        // Get queue position if status is wf_printer
+        let queuePosition = null;
+        if (status === "wf_printer" || status === "wf_teacher") {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            // Get requests created before this one for today
+            const earlierRequests = await PrintRequest.find({
+                facultyId: printRequest.facultyId,
+                createdAt: {
+                    $gte: today,
+                    $lt: tomorrow
+                },
+                createdAt: { $lt: printRequest.createdAt }
+            });
+
+            // Count requests by status
+            queuePosition = {
+                wfPrinter: earlierRequests.filter(req => req.status === "wf_printer").length,
+                wfTeacher: earlierRequests.filter(req => req.status === "wf_teacher").length
+            };
+        }
+
+        // Send email to teacher
+        try {
+            await emailSender({
+                email: printRequest.user.email,
+                subject: "Print Request Status Update",
+                html: printRequestUpdateTemplate(
+                    printRequest.user.name,
+                    {
+                        type: printRequest.type,
+                        quantity: printRequest.quantity,
+                        description: printRequest.description,
+                        status: status
+                    },
+                    queuePosition
+                )
+            });
+        } catch (emailError) {
+            console.error("Error sending email:", emailError);
+            // Don't fail the request if email fails
+        }
 
         res.status(200).json({
             success: true,

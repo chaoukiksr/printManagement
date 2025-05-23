@@ -22,6 +22,7 @@ export default function RequestPopup() {
   const requestId = searchParams.get("id");
 
   const [isOpen, setIsOpen] = useState(false);
+
   const closePopup = () => {
     setIsOpen(false);
     router.replace(pathname);
@@ -51,8 +52,7 @@ export default function RequestPopup() {
     }
   }, [mode, requestId, dispatch]);
 
-  if (!isOpen) return null;
-
+  if (!isOpen || !mode) return null;
   return (
     <div className="popup">
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>

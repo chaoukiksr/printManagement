@@ -51,7 +51,7 @@ export default function Login() {
 
   return (
     <div className="login-page flex items-center justify-center h-[90vh]">
-      <div className="content bg-white shadow-2xl rounded-[20px] p-[30px] min-w-[360px]">
+      <div className="content bg-white shadow-2xl rounded-[20px] p-[30px] w-[90%] sm:w-[400px]">
         <h3 className="text-2xl text-center font-bold">
           Sign In To your Account
         </h3>

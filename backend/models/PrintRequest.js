@@ -6,6 +6,7 @@ const printRequestSchema = new mongoose.Schema({
         id : {type: mongoose.Schema.Types.ObjectId, ref: "User"},
         name: {type: String , ref: "User"},
         image: {type: String , ref: "User"},
+        email: {type: String , ref: "User"},
     },
     departmentId : {type: mongoose.Schema.Types.ObjectId, ref: "Department"},
     departmentName : {type: String , ref: "Department"},
@@ -15,7 +16,7 @@ const printRequestSchema = new mongoose.Schema({
     type : {type : String , enum : ["Test" , "Exam" , "Other"] , required: [true , "Type is required"]},
     quantity : {type : Number , required: [true , "Quantity is required"]},
     description : {type : String },
-    status : {type : String , enum : ["wf_printer" , "wf-teacher" , "pending" , "completed" , "refused"] , default: "pending"},
+    status : {type : String , enum : ["wf_printer" , "wf_teacher" , "pending" , "completed" , "refused"] , default: "pending"},
     // file details
     file : {type : String},
 },{timestamps: true});

@@ -7,6 +7,7 @@ const requestSlice = createSlice({
     isFetching: false,
     error: null,
     selectedRequest: null,
+    searchQuery: "",
   },
   reducers: {
     setRequests: (state, action) => {
@@ -40,6 +41,9 @@ const requestSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
   },
 });
 
@@ -52,6 +56,7 @@ export const {
   setFetching,
   setError,
   clearError,
+  setSearchQuery,
 } = requestSlice.actions;
 
 export default requestSlice.reducer;

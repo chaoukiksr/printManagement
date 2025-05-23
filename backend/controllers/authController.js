@@ -7,6 +7,8 @@ import Department from "../models/Department.js";
 import Invitation from "../models/Invitations.js";
 import { emailSender } from "../utils/email/emailSender.js";
 import { emailVerificationTemplate } from "../utils/email/emailTemplates.js";
+import fs from 'fs';
+import path from 'path';
 
 export const register = async (req, res) => {
   try {
@@ -245,10 +247,11 @@ export const verifyInvitation = async (req, res) => {
 
     // Check if username is already taken
     const existingUser = await User.findOne({ username });
-    if (existingUser) {
+    const existingEmail = await User.findOne({ email });
+    if (existingUser || existingEmail) {
       return res.status(400).json({
         success: false,
-        message: "Username is already taken",
+        message: "Username or email is already taken",
       });
     }
 
@@ -450,6 +453,7 @@ export const checkAuth = async (req, res) => {
       _id: req.user._id,
       username: req.user.username,
       email: req.user.email,
+      image: req.user.image,
       role: req.user.role,
       departmentId: req.user.departmentId,
       facultyId: req.user.facultyId,
@@ -472,63 +476,6 @@ export const checkAuth = async (req, res) => {
   }
 };
 
-// Get user profile with additional data
-export const getProfile = async (req, res) => {
-  try {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({
-        success: false,
-        message: "Not authenticated",
-      });
-    }
-
-    // Get user with populated references
-    const user = await User.findById(req.user._id)
-      .populate("departmentId", "name")
-      .populate("facultyId", "name");
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    // Format user data
-    const userData = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      departments: user.departmentId
-        ? user.departmentId.map((dept) => ({
-            _id: dept._id,
-            name: dept.name,
-          }))
-        : null,
-      faculty: user.facultyId
-        ? {
-            _id: user.facultyId._id,
-            name: user.facultyId.name,
-          }
-        : null,
-      isSubAdmin: user.isSubAdmin,
-      isEmailVerified: user.isEmailVerified,
-    };
-
-    res.status(200).json({
-      success: true,
-      data: userData,
-    });
-  } catch (error) {
-    console.error("Profile fetch error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error fetching profile",
-      error: error.message,
-    });
-  }
-};
 
 // Resend OTP
 export const resendOTP = async (req, res) => {
@@ -589,6 +536,97 @@ export const resendOTP = async (req, res) => {
       success: false,
       message: "Error resending OTP",
       error: error.message,
+    });
+  }
+};
+
+// Update profile (unified function for both profile info and image)
+export const updateProfile = async (req, res) => {
+  try {
+    const { username, currentPassword, newPassword } = req.body;
+    const imageFile = req.file;
+
+    // Find user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Update username if provided
+    if (username && username !== user.username) {
+      // Check if username is already taken
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "Username is already taken"
+        });
+      }
+      user.username = username;
+    }
+
+    // Update password if provided
+    if (currentPassword && newPassword) {
+      // Verify current password
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: "Current password is incorrect"
+        });
+      }
+
+      // Hash and update new password
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+    }
+
+    // Update profile image if provided
+    if (imageFile) {
+      // Delete previous image if it exists
+      if (user.image) {
+        try {
+          const previousImagePath = path.resolve(user.image);
+          if (fs.existsSync(previousImagePath)) {
+            fs.unlinkSync(previousImagePath);
+          }
+        } catch (error) {
+          console.error("Error deleting previous profile image:", error);
+          // Continue with the update even if deletion fails
+        }
+      }
+      user.image = imageFile.path;
+    }
+
+    await user.save();
+
+    // Return updated user data (excluding sensitive information)
+    const updatedUser = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      image: user.image,
+      departmentId: user.departmentId,
+      facultyId: user.facultyId,
+      isSubAdmin: user.isSubAdmin,
+      isEmailVerified: user.isEmailVerified
+    };
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating profile",
+      error: error.message
     });
   }
 };

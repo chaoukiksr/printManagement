@@ -1,6 +1,7 @@
 import express from "express";
 import * as authController from "../controllers/authController.js";
 import { checkEmailVerification, checkRole } from "../utils/middelwares/auth.js";
+import profileImageUpload from "../utils/profileImageUpload.js";
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.post("/logout", authController.logout);
 
 // Protected routes (authentication required)
 router.get("/check", authController.checkAuth);
-router.get("/profile", checkRole(["admin", "department", "teacher", "printer"]), authController.getProfile);
+router.patch("/profile", profileImageUpload.single('image'), authController.updateProfile);
 
 export default router;

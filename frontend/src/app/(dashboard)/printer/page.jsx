@@ -1,15 +1,15 @@
 "use client";
-import ReqTable from "@/components/dashboard/ReqTable";
-import Navbar from "@/components/dashboard/Navbar";
+import ReqTable from "@/components/dashboard/tables/ReqTable";
 import React, { useState } from "react";
-import RequestPopup from "@/components/dashboard/RequestPopup";
+import { useSelector } from "react-redux";
 
 export default function PrinterPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const { role } = useSelector((state) => state.auth);
 
+  if (role !== "printer") return null;
   return (
     <div>
-      <Navbar />
       <div className="container m-auto mt-[60px] px-4">
         <h3 className="text-3xl font-bold">Requests</h3>
         <div className="mt-5 flex items-center gap-3 justify-between flex-wrap-reverse">
@@ -53,8 +53,6 @@ export default function PrinterPage() {
         </div>
         <ReqTable selectedStatus={selectedStatus} />
       </div>
-
-      <RequestPopup />
     </div>
   );
 }

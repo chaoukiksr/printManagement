@@ -92,17 +92,6 @@ export const checkAuth = async (dispatch) => {
   }
 };
 
-// Get user profile
-export const getProfile = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/auth/profile`, {
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || { message: "Failed to fetch profile" };
-  }
-};
 
 // Verify invitation and register
 export const verifyInvitation = async (invitationData, dispatch) => {

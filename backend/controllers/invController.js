@@ -49,6 +49,14 @@ export const createInvitation = async (req, res) => {
       });
     }
 
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already exists",
+      });
+    }
+
     // Validate department/faculty based on role
     if (role === "teacher") {
       const department = await Department.findById(from);

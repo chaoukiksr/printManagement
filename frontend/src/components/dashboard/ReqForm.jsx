@@ -267,12 +267,14 @@ export default function ReqForm({ reqData, closePopup }) {
           <ActionsForPrinter
             onStatusUpdate={handleStatusUpdate}
             isFetching={isFetching}
+            file={request.file}
           />
         ) : (
           request.status === "pending" && (
             <ActionsForDep
               onStatusUpdate={handleStatusUpdate}
               isFetching={isFetching}
+              file={request.file}
             />
           )
         )}
@@ -281,7 +283,7 @@ export default function ReqForm({ reqData, closePopup }) {
   );
 }
 
-function ActionsForDep({ onStatusUpdate, isFetching }) {
+function ActionsForDep({ onStatusUpdate, isFetching , file}) {
   return (
     <div className="cta flex flex-wrap items-center gap-3 mt-3">
       <button
@@ -295,7 +297,7 @@ function ActionsForDep({ onStatusUpdate, isFetching }) {
       <button
         type="button"
         className="approved flex-1 !py-4 min-w-[200px]"
-        onClick={() => onStatusUpdate("wf_printer")}
+        onClick={() => onStatusUpdate(file ? "wf_printer" : "wf_teacher")}
         disabled={isFetching}
       >
         {isFetching ? <ButtonLoader /> : "Approve the request"}
@@ -326,24 +328,26 @@ function ActionsForTeacher({ closePopup, isFetching }) {
   );
 }
 
-function ActionsForPrinter({ onStatusUpdate, isFetching }) {
+function ActionsForPrinter({ onStatusUpdate, isFetching, file }) {
   return (
     <div className="cta flex flex-wrap items-center gap-3 mt-3">
-      <button
-        type="button"
-        className="refused flex-1 !py-4 min-w-[200px]"
-        onClick={() => onStatusUpdate("refused")}
-        disabled={isFetching}
-      >
-        {isFetching ? <ButtonLoader /> : "Refuse the request"}
-      </button>
+      {!file && (
+        <button
+          type="button"
+          className="wf_teacher flex-1 !py-4 min-w-[200px]"
+          onClick={() => onStatusUpdate("wf_teacher")}
+          disabled={isFetching}
+        >
+          {isFetching ? <ButtonLoader /> : "Waiting for the teacher"}
+        </button>
+      )}
       <button
         type="button"
         className="approved flex-1 !py-4 min-w-[200px]"
         onClick={() => onStatusUpdate("completed")}
         disabled={isFetching}
       >
-        {isFetching ? <ButtonLoader /> : "Complete the request"}
+        {isFetching ? <ButtonLoader /> : "Set as completed"}
       </button>
     </div>
   );

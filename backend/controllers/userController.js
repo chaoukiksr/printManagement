@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import fs from 'fs';
+import path from 'path';
 
 export const getPrinter = async (req, res) => {
   try {
@@ -88,13 +90,31 @@ export const getSubAdmins = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findByIdAndDelete(userId);
+    const user = await User.findById(userId);
+    
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found",
       });
     }
+
+    // Delete user's profile image if it exists
+    if (user.image) {
+      try {
+        const imagePath = path.resolve(user.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      } catch (error) {
+        console.error("Error deleting user's profile image:", error);
+        // Continue with user deletion even if image deletion fails
+      }
+    }
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+
     res.status(200).json({
       success: true,
       message: "User deleted successfully",
