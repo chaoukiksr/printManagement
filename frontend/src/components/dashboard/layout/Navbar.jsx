@@ -174,7 +174,7 @@ export default function Navbar() {
   return (
     <>
       <div
-        className={`navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[15px] z-50 ${
+        className={`navbar-dash sticky top-0 shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[10px] z-50 ${
           role !== "admin" && role !== "department" && "lg:container"
         }`}
       >
@@ -185,7 +185,7 @@ export default function Navbar() {
         >
           <div className="flex items-center gap-6">
             <Link href={"/"}>
-              <h3 className="text-3xl font-bold">Name</h3>
+              <Image src={"/logo.png"} alt="logo" width={90} height={90}/>
             </Link>
             {role === "printer" && pathname === "/printer" && (
               <SearchBar search={search} setSearch={setSearch} />

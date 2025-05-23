@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -41,7 +42,7 @@ export default function Navbar() {
     <div className="navbar sticky top-0 lg:container shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[10px] lg:rounded-b-[20px] z-50">
       <div className="items-center justify-between hidden md:flex">
         <Link href={"/"}>
-          <h3 className="text-3xl font-bold">Name</h3>
+          <Image src={"/logo.png"} alt="logo" width={90} height={90}/>
         </Link>
         {pathname === "/login" || pathname === "/register" ? (
           LogQuestion()
