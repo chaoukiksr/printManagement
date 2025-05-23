@@ -12,6 +12,8 @@ router.post("/resend-otp", authController.resendOTP);
 router.post("/verify-invitation", authController.verifyInvitation);
 router.post("/login", checkEmailVerification, authController.login);
 router.post("/logout", authController.logout);
+router.post("/request-password-reset", authController.requestPasswordReset);
+router.post("/reset-password/:resetToken", authController.resetPassword);
 
 // Protected routes (authentication required)
 router.get("/check", authController.checkAuth);

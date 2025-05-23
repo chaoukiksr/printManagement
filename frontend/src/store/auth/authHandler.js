@@ -119,3 +119,29 @@ export const resendOTP = async (email) => {
     throw error.response?.data || { message: "Failed to resend OTP" };
   }
 };
+
+// Request password reset
+export const requestPasswordReset = async (email) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/auth/request-password-reset`,
+      { email }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to request password reset" };
+  }
+};
+
+// Reset password
+export const resetPassword = async (resetToken, password) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/auth/reset-password/${resetToken}`,
+      { password }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { message: "Failed to reset password" };
+  }
+};

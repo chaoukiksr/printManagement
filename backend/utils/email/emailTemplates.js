@@ -467,3 +467,122 @@ export const printRequestUpdateTemplate = (username, requestDetails, queuePositi
     </html>
     `;
 };
+
+export const passwordResetTemplate = (username, resetUrl) => {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <title>Password Reset</title>
+        <style>
+            body {
+                font-family: 'Cairo', Arial, sans-serif;
+                line-height: 1.6;
+                color: #3f5d6d;
+                margin: 0;
+                padding: 0;
+                background-color: #c4eeec;
+            }
+            .container {
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 0;
+                background-color: #edfaf9;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                background-color: #3f5d6d;
+                color: #edfaf9;
+                padding: 30px 20px;
+                text-align: center;
+                border-radius: 20px 20px 0 0;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 600;
+            }
+            .content {
+                padding: 30px;
+                background-color: #edfaf9;
+            }
+            .button-container {
+                text-align: center;
+                margin: 30px 0;
+            }
+            .button {
+                display: inline-block;
+                padding: 14px 28px;
+                background-color: #3f5d6d;
+                color: #edfaf9;
+                text-decoration: none;
+                border-radius: 12px;
+                font-weight: 500;
+                font-size: 16px;
+                transition: all 0.2s ease-in-out;
+            }
+            .button:hover {
+                background-color: #2c4251;
+                transform: translateY(-1px);
+            }
+            .message {
+                color: #3f5d6d;
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px;
+                background-color: #E1F7F5;
+                color: #9faeb6;
+                font-size: 14px;
+                border-top: 1px solid #cfd7db;
+            }
+            .highlight {
+                color: #3f5d6d;
+                font-weight: 600;
+            }
+            .warning {
+                background-color: #E1F7F5;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 25px 0;
+                text-align: center;
+                font-size: 14px;
+                color: #9a0422;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Password Reset</h1>
+            </div>
+            <div class="content">
+                <p class="message">Hello <span class="highlight">${username}</span>,</p>
+                <p class="message">We received a request to reset your password for your Print Management System account. Click the button below to reset your password:</p>
+                
+                <div class="button-container">
+                    <a href="${resetUrl}" class="button">Reset Password</a>
+                </div>
+                
+                <div class="warning">
+                    This link will expire in 10 minutes. If you did not request a password reset, please ignore this email or contact support if you have concerns.
+                </div>
+                
+                <p class="message">If the button above doesn't work, you can also copy and paste this link into your browser:</p>
+                <p class="message" style="word-break: break-all;">${resetUrl}</p>
+                
+                <p class="message">Best regards,<br>Print Management Team</p>
+            </div>
+            <div class="footer">
+                <p>This is an automated message, please do not reply to this email.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};

@@ -6,9 +6,13 @@ import "../stratigies/localStrategy.js";
 import Department from "../models/Department.js";
 import Invitation from "../models/Invitations.js";
 import { emailSender } from "../utils/email/emailSender.js";
-import { emailVerificationTemplate } from "../utils/email/emailTemplates.js";
+import { emailVerificationTemplate, passwordResetTemplate } from "../utils/email/emailTemplates.js";
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const register = async (req, res) => {
   try {
@@ -626,6 +630,105 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error updating profile",
+      error: error.message
+    });
+  }
+};
+
+// Request password reset
+export const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
+
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "No account found with this email"
+      });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    // Update user with reset token
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiry = resetTokenExpiry;
+    await user.save();
+
+    // Send reset email
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+    await emailSender({
+      email: user.email,
+      subject: "Password Reset - Print Management System",
+      html: passwordResetTemplate(user.username, resetUrl)
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset instructions sent to your email"
+    });
+  } catch (error) {
+    console.error("Request password reset error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error requesting password reset",
+      error: error.message
+    });
+  }
+};
+
+// Reset password
+export const resetPassword = async (req, res) => {
+  try {
+    const { resetToken } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required"
+      });
+    }
+
+    // Find user with valid reset token
+    const user = await User.findOne({
+      resetPasswordToken: resetToken,
+      resetPasswordExpiry: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired reset token"
+      });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiry = undefined;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password has been reset successfully"
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error resetting password",
       error: error.message
     });
   }
