@@ -1,7 +1,7 @@
 import PrintRequest from "../models/PrintRequest.js";
 import Department from "../models/Department.js";
 import { emailSender } from "../utils/email/emailSender.js";
-import { printRequestUpdateTemplate } from "../utils/email/emailTemplates.js";
+import { printRequestUpdateTemplate, requestRefusalTemplate } from "../utils/email/emailTemplates.js";
 import fs from 'fs';
 import path from 'path';
 
@@ -137,7 +137,7 @@ export const updatePrintRequest = async (req, res) => {
 export const updateStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const { status, refusalReason } = req.body;
 
         const printRequest = await PrintRequest.findById(id);
 
@@ -184,71 +184,107 @@ export const updateStatus = async (req, res) => {
             });
         }
 
-        // Delete file if status is completed
-        if (status === "completed" && printRequest.file) {
+        // Handle file deletion for completed or refused status
+        if (["completed", "refused"].includes(status) && printRequest.file) {
             deleteFile(printRequest.file);
         }
 
-        const updatedRequest = await PrintRequest.findByIdAndUpdate(
-            id,
-            { 
-                status,
-                ...(status === "completed" ? { file: null } : {})
-            },
-            { new: true, runValidators: true }
-        );
+        let updatedRequest;
+        
+        if (status === "refused") {
+            // Send email before deleting the request
+            try {
+                await emailSender({
+                    email: printRequest.user.email,
+                    subject: "Print Request Refused",
+                    html: requestRefusalTemplate(
+                        printRequest.user.name,
+                        {
+                            type: printRequest.type,
+                            quantity: printRequest.quantity,
+                            description: printRequest.description,
+                            status: status
+                        },
+                        refusalReason
+                    )
+                });
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+                // Don't fail the request if email fails
+            }
 
-        // Get queue position if status is wf_printer
-        let queuePosition = null;
-        if (status === "wf_printer" || status === "wf_teacher") {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-
-            // Get requests created before this one for today
-            const earlierRequests = await PrintRequest.find({
-                facultyId: printRequest.facultyId,
-                createdAt: {
-                    $gte: today,
-                    $lt: tomorrow
+            // Delete the request
+            await PrintRequest.findByIdAndDelete(id);
+            
+            return res.status(200).json({
+                success: true,
+                message: "Request refused and deleted successfully"
+            });
+        } else {
+            // For other statuses, update the request
+            updatedRequest = await PrintRequest.findByIdAndUpdate(
+                id,
+                { 
+                    status,
+                    ...(status === "completed" ? { file: null } : {})
                 },
-                createdAt: { $lt: printRequest.createdAt }
-            });
+                { new: true, runValidators: true }
+            );
 
-            // Count requests by status
-            queuePosition = {
-                wfPrinter: earlierRequests.filter(req => req.status === "wf_printer").length,
-                wfTeacher: earlierRequests.filter(req => req.status === "wf_teacher").length
-            };
-        }
+            // Get queue position if status is wf_printer
+            let queuePosition = null;
+            if (status === "wf_printer" || status === "wf_teacher") {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
 
-        // Send email to teacher
-        try {
-            await emailSender({
-                email: printRequest.user.email,
-                subject: "Print Request Status Update",
-                html: printRequestUpdateTemplate(
-                    printRequest.user.name,
-                    {
-                        type: printRequest.type,
-                        quantity: printRequest.quantity,
-                        description: printRequest.description,
-                        status: status
+                // Get requests created before this one for today
+                const earlierRequests = await PrintRequest.find({
+                    facultyId: printRequest.facultyId,
+                    createdAt: {
+                        $gte: today,
+                        $lt: tomorrow
                     },
-                    queuePosition
-                )
-            });
-        } catch (emailError) {
-            console.error("Error sending email:", emailError);
-            // Don't fail the request if email fails
-        }
+                    $expr: {
+                        $lt: ["$createdAt", printRequest.createdAt]
+                    }
+                });
 
-        res.status(200).json({
-            success: true,
-            message: "Status updated successfully",
-            data: updatedRequest
-        });
+                // Count requests by status
+                queuePosition = {
+                    wfPrinter: earlierRequests.filter(req => req.status === "wf_printer").length,
+                    wfTeacher: earlierRequests.filter(req => req.status === "wf_teacher").length
+                };
+            }
+
+            // Send email for non-refused status
+            try {
+                await emailSender({
+                    email: printRequest.user.email,
+                    subject: "Print Request Status Update",
+                    html: printRequestUpdateTemplate(
+                        printRequest.user.name,
+                        {
+                            type: printRequest.type,
+                            quantity: printRequest.quantity,
+                            description: printRequest.description,
+                            status: status
+                        },
+                        queuePosition
+                    )
+                });
+            } catch (emailError) {
+                console.error("Error sending email:", emailError);
+                // Don't fail the request if email fails
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Status updated successfully",
+                data: updatedRequest
+            });
+        }
     } catch (error) {
         console.error("Update status error:", error);
         res.status(500).json({
@@ -321,6 +357,7 @@ export const getPrintRequests = async (req, res) => {
             // For printer, only show specific statuses
             if (req.user.role === "printer") {
                 query.status = { $in: ["wf_printer", "wf_teacher", "completed"] };
+            }
                 
                 // Filter for today's requests
                 const today = new Date();
@@ -332,7 +369,6 @@ export const getPrintRequests = async (req, res) => {
                     $gte: today,
                     $lt: tomorrow
                 };
-            }
         }
         // Filter by user if teacher
         else if (req.user.role === "teacher") {

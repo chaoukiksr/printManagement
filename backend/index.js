@@ -74,12 +74,14 @@ import invRoutes from "./routes/inv.js";
 import departmentRoutes from "./routes/department.js";
 import userRoutes from "./routes/user.js";
 import printRequestRoutes from "./routes/printRequest.js";
+import statisticsRoutes from "./routes/statistics.js";
 
 app.use("/api/auth", authRoutes);
 app.use("/api/inv", invRoutes);
 app.use("/api/department", departmentRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/print", printRequestRoutes);
+app.use("/api/statistics", statisticsRoutes);
 
 
 // Error handling middleware

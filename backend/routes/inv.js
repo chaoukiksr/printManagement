@@ -17,4 +17,10 @@ router.delete(
   invController.deleteInvitation
 );
 
+router.post(
+  "/:invitationId/resend",
+  checkRole(["admin", "department"]),
+  invController.resendInvitation
+);
+
 export default router;

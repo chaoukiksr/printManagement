@@ -15,12 +15,14 @@ import {
   updateRequestStatus,
 } from "@/store/request/requestHandler";
 import { toast } from "react-hot-toast";
+import RefusalModal from "./modals/RefusalModal";
 
 export default function ReqForm({ reqData, closePopup }) {
   const [request, setRequest] = useState(null);
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [isFileRemoved, setIsFileRemoved] = useState(false);
+  const [showRefusalModal, setShowRefusalModal] = useState(false);
   const { role } = useSelector((state) => state.auth);
   const { isFetching } = useSelector((state) => state.request);
   const dispatch = useDispatch();
@@ -95,13 +97,17 @@ export default function ReqForm({ reqData, closePopup }) {
     }
   };
 
-  const handleStatusUpdate = async (status) => {
+  const handleStatusUpdate = async (status, refusalReason = null) => {
     try {
-      await dispatch(updateRequestStatus(reqData._id, status));
+      await dispatch(updateRequestStatus(reqData._id, status, refusalReason));
       closePopup();
     } catch (error) {
       console.error("Status update error:", error);
     }
+  };
+
+  const handleRefusal = (reason) => {
+    handleStatusUpdate("refused", reason);
   };
 
   if (!request || !role) return <ButtonLoader />;
@@ -262,93 +268,74 @@ export default function ReqForm({ reqData, closePopup }) {
         </div>
 
         {role === "teacher" ? (
-          <ActionsForTeacher closePopup={closePopup} isFetching={isFetching} />
+          <div className="cta flex flex-wrap items-center gap-3 mt-3">
+            <button
+              type="button"
+              className="btn-gray flex-1 !py-4 min-w-[200px]"
+              onClick={closePopup}
+              disabled={isFetching}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn flex-1 !py-4 min-w-[200px]"
+              disabled={isFetching}
+            >
+              {isFetching ? <ButtonLoader /> : "Submit"}
+            </button>
+          </div>
         ) : role === "printer" ? (
-          <ActionsForPrinter
-            onStatusUpdate={handleStatusUpdate}
-            isFetching={isFetching}
-            file={request.file}
-          />
+          <div className="cta flex flex-wrap items-center gap-3 mt-3">
+            {!file && request.status === "wf_printer" && (
+              <button
+                type="button"
+                className="wf_teacher flex-1 !py-4 min-w-[200px]"
+                onClick={() => handleStatusUpdate("wf_teacher")}
+                disabled={isFetching}
+              >
+                {isFetching ? <ButtonLoader /> : "Waiting for the teacher"}
+              </button>
+            )}
+            <button
+              type="button"
+              className="approved flex-1 !py-4 min-w-[200px]"
+              onClick={() => handleStatusUpdate("completed")}
+              disabled={isFetching}
+            >
+              {isFetching ? <ButtonLoader /> : "Set as completed"}
+            </button>
+          </div>
         ) : (
           request.status === "pending" && (
-            <ActionsForDep
-              onStatusUpdate={handleStatusUpdate}
-              isFetching={isFetching}
-              file={request.file}
-            />
+            <div className="cta flex flex-wrap items-center gap-3 mt-3">
+              <button
+                type="button"
+                className="refused flex-1 !py-4 min-w-[200px]"
+                onClick={() => setShowRefusalModal(true)}
+                disabled={isFetching}
+              >
+                {isFetching ? <ButtonLoader /> : "Refuse the request"}
+              </button>
+              <button
+                type="button"
+                className="approved flex-1 !py-4 min-w-[200px]"
+                onClick={() => handleStatusUpdate(file ? "wf_printer" : "wf_teacher")}
+                disabled={isFetching}
+              >
+                {isFetching ? <ButtonLoader /> : "Approve the request"}
+              </button>
+            </div>
           )
         )}
       </form>
-    </div>
-  );
-}
 
-function ActionsForDep({ onStatusUpdate, isFetching , file}) {
-  return (
-    <div className="cta flex flex-wrap items-center gap-3 mt-3">
-      <button
-        type="button"
-        className="refused flex-1 !py-4 min-w-[200px]"
-        onClick={() => onStatusUpdate("refused")}
-        disabled={isFetching}
-      >
-        {isFetching ? <ButtonLoader /> : "Refuse the request"}
-      </button>
-      <button
-        type="button"
-        className="approved flex-1 !py-4 min-w-[200px]"
-        onClick={() => onStatusUpdate(file ? "wf_printer" : "wf_teacher")}
-        disabled={isFetching}
-      >
-        {isFetching ? <ButtonLoader /> : "Approve the request"}
-      </button>
-    </div>
-  );
-}
-
-function ActionsForTeacher({ closePopup, isFetching }) {
-  return (
-    <div className="cta flex flex-wrap items-center gap-3 mt-3">
-      <button
-        type="button"
-        className="btn-gray flex-1 !py-4 min-w-[200px]"
-        onClick={closePopup}
-        disabled={isFetching}
-      >
-        Cancel
-      </button>
-      <button
-        type="submit"
-        className="btn flex-1 !py-4 min-w-[200px]"
-        disabled={isFetching}
-      >
-        {isFetching ? <ButtonLoader /> : "Submit"}
-      </button>
-    </div>
-  );
-}
-
-function ActionsForPrinter({ onStatusUpdate, isFetching, file }) {
-  return (
-    <div className="cta flex flex-wrap items-center gap-3 mt-3">
-      {!file && (
-        <button
-          type="button"
-          className="wf_teacher flex-1 !py-4 min-w-[200px]"
-          onClick={() => onStatusUpdate("wf_teacher")}
-          disabled={isFetching}
-        >
-          {isFetching ? <ButtonLoader /> : "Waiting for the teacher"}
-        </button>
-      )}
-      <button
-        type="button"
-        className="approved flex-1 !py-4 min-w-[200px]"
-        onClick={() => onStatusUpdate("completed")}
-        disabled={isFetching}
-      >
-        {isFetching ? <ButtonLoader /> : "Set as completed"}
-      </button>
+      <RefusalModal
+        isOpen={showRefusalModal}
+        onClose={() => setShowRefusalModal(false)}
+        onConfirm={handleRefusal}
+        isFetching={isFetching}
+      />
     </div>
   );
 }

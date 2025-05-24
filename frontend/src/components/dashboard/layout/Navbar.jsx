@@ -185,7 +185,7 @@ export default function Navbar() {
         >
           <div className="flex items-center gap-6">
             <Link href={"/"}>
-              <Image src={"/logo.png"} alt="logo" width={90} height={90}/>
+              <Image src={"/logo.png"} alt="logo" width={90} height={90} />
             </Link>
             {role === "printer" && pathname === "/printer" && (
               <SearchBar search={search} setSearch={setSearch} />
@@ -265,27 +265,29 @@ export default function Navbar() {
 
       {showSidebar && (
         <div
-          className={`sidebar fixed top-[70px] transition-all duration-300 ${
+          className={`sidebar fixed top-[60px] transition-all duration-300 ${
             isOpen ? "right-0" : "-right-[300px]"
           } p-5 py-5 w-[271px] shadow-2xl z-40 bg-white overflow-y-auto`}
-          style={{ height: "calc(100vh - 70px)" }}
+          style={{ height: "calc(100vh - 60px)" }}
         >
           <div className="content flex flex-col justify-between h-full">
             <div className="navigations">
-              <div className="account flex flex-col justify-center items-center gap-3 cursor-pointer">
-                <div className="photo">
-                  <Image
-                    src={(user && user.image) || "/assets/default-avatar.jpg"}
-                    alt="user"
-                    width={70}
-                    height={70}
-                    className="rounded-full border-2 border-gray-200"
-                  />
+              <Link href={"/admin/profile"}>
+                <div className="account flex flex-col justify-center items-center gap-3 cursor-pointer">
+                  <div className="photo">
+                    <Image
+                      src={(user && user.image) || "/assets/default-avatar.jpg"}
+                      alt="user"
+                      width={70}
+                      height={70}
+                      className="rounded-full border-2 border-gray-200"
+                    />
+                  </div>
+                  <div className="username text-lg font-medium">
+                    {user && user.username}
+                  </div>
                 </div>
-                <div className="username text-lg font-medium">
-                  {user && user.username}
-                </div>
-              </div>
+              </Link>
               <hr className="w-full my-4 border-gray-300" />
               <Link href={"/admin"}>
                 <div
@@ -311,7 +313,7 @@ export default function Navbar() {
                   </span>
                 </div>
               </Link>
-              <Link href={"#"}>
+              <Link href={"/admin/statistics"}>
                 <div
                   className={`flex items-center gap-3 my-4 ${
                     pathname !== "/admin/statistics" && "text-gray-400"

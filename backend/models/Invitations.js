@@ -24,7 +24,7 @@ const invitationSchema = new mongoose.Schema({
     invitationLink : {
         type : String ,
     },
-});
+}, { timestamps: true });
 
 const Invitation =mongoose.models.Invitation ||  mongoose.model("Invitation", invitationSchema);
 export default Invitation;

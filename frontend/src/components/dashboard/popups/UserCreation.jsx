@@ -36,6 +36,9 @@ export default function UserCreation({ status, closePopup, role }) {
       case "teacher": 
         createInvitation({email , role: "teacher"}, dispatch)
         break;
+      case "department":
+        createInvitation({email , role: "department" , isSubAdmin: true}, dispatch)
+        break;
       default:
         break;
     }
@@ -50,25 +53,25 @@ export default function UserCreation({ status, closePopup, role }) {
     <div className={`popup`}>
       <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
         <h3 className="text-xl font-bold text-center mb-7">
-          <span style={{ textTransform: "capitalize" }}>{role}</span> creation
+          <span style={{ textTransform: "capitalize" }}>{role === "department" ? "Admin" : role}</span> creation
         </h3>
         <form onSubmit={handleSubmit}>
           <div className="field">
             <label htmlFor="email">
-              <span style={{ textTransform: "capitalize" }}>{role}</span> Email
+              <span style={{ textTransform: "capitalize" }}>{role === "department" ? "Admin" : role}</span> Email
             </label>
             <div className="input">
               <input
                 type="email"
                 id="email"
-                placeholder={`Enter your ${role} email`}
+                placeholder={`Enter your ${role === "department" ? "Admin" : role} email`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <p className="text-gray-400" style={{ fontSize: "14px" }}>
-              we will sent an invitation to this email so the {role} can create
+              we will sent an invitation to this email so the {role === "department" ? "Admin" : role} can create
               his account.
             </p>
           </div>
@@ -80,7 +83,7 @@ export default function UserCreation({ status, closePopup, role }) {
             >
               Cancel
             </button>
-            <button className="btn flex-grow-1">{role === 'printer' ? 'Create the' : 'Add'} {role}</button>
+            <button className="btn flex-grow-1">{role === 'printer' ? 'Create the printer' : 'Add'} {role === "department" ? "Admin" : role}</button>
           </div>
         </form>
       </div>

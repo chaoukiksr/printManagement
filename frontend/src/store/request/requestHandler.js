@@ -79,8 +79,8 @@ export const createRequest = (formData) => async (dispatch, getState) => {
   }
 };
 
-// Update print request (teacher only)
-export const updateRequestStatus = (requestId, status) => async (dispatch, getState) => {
+// Update print request (for department and printer)
+export const updateRequestStatus = (requestId, status, refusalReason = null) => async (dispatch, getState) => {
   try {
     dispatch(setFetching(true));
     const { role } = getState().auth;
@@ -91,18 +91,26 @@ export const updateRequestStatus = (requestId, status) => async (dispatch, getSt
 
     const response = await axios.patch(
       `${API_URL}/print/${requestId}/status`,
-      { status },
+      { status, refusalReason },
       { withCredentials: true }
     );
 
-    dispatch(updateRequest(response.data.data));
-    toast.success("Request status updated successfully");
+    if (status === "refused") {
+      // If the request was refused, remove it from the state
+      dispatch(deleteRequest(requestId));
+      toast.success("Request refused and deleted successfully");
+    } else {
+      // For other statuses, update the request in state
+      dispatch(updateRequest(response.data.data));
+      toast.success("Request status updated successfully");
+    }
+    
     return response.data;
   } catch (error) {
     dispatch(setError(error.response?.data?.message || "Failed to update request status"));
     toast.error(error.response?.data?.message || "Failed to update request status");
     throw error;
-  }finally{
+  } finally {
     dispatch(setFetching(false));
   }
 };

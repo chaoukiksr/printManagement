@@ -155,11 +155,11 @@ export default function Profile() {
             {/* Profile Information Section */}
             <div className="md:col-span-2">
               <div className="space-y-8">
-                <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-4 flex-wrap gap-4">
                   <h3 className="text-xl font-semibold text-primary">Profile Information</h3>
                   <button
                     onClick={() => setIsEditing(!isEditing)}
-                    className="btn-outline !py-2 !px-4 flex items-center gap-2 hover:scale-105 transition-transform"
+                    className="btn-outline !py-2 !px-4 flex flex-1 md:flex-none items-center gap-2 hover:scale-105 transition-transform"
                   >
                     {isEditing ? (
                       <>

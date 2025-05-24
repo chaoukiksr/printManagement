@@ -1,8 +1,17 @@
-import { deleteInvitation, getInvitations } from "@/store/invitation/invitationHandler";
-import { TrashIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import {
+  deleteInvitation,
+  getInvitations,
+  resendInvitation,
+} from "@/store/invitation/invitationHandler";
+import {
+  TrashIcon,
+  EnvelopeIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeletePopup from "@/components/dashboard/popups/DeletePopup";
+import moment from 'moment';
 
 export default function InvTable() {
   const { invitations } = useSelector((state) => state.invitations);
@@ -12,14 +21,14 @@ export default function InvTable() {
     getInvitations(dispatch);
   }, [dispatch]);
 
-  // delete invitation 
+  // delete invitation
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedInvitationId, setSelectedInvitationId] = useState(null);
 
   const handleDelete = (invitationId) => {
     setIsDeleteOpen(true);
     setSelectedInvitationId(invitationId);
-  }
+  };
 
   if (!invitations) return null;
 
@@ -38,20 +47,31 @@ export default function InvTable() {
           <tr>
             <th style={{ textTransform: "capitalize" }}>Role</th>
             <th>Email</th>
-            <th>Delete</th>
+            <th>Time</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
           {invitations.map((inv) => (
             <tr key={inv._id} className="border-b border-(--borders)">
+              {console.log(inv)}
               <td className="p-4">{inv.isSubAdmin ? "Admin" : inv.role}</td>
               <td className="p-4">{inv.email}</td>
+              <td className="p-4">
+                <span title={moment(inv.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}>
+                  {moment(inv.updatedAt).fromNow()}
+                </span>
+              </td>
               <td className="p-4">
                 <div className="flex items-center gap-2">
                   <TrashIcon
                     className="size-7 cursor-pointer circle"
                     onClick={() => handleDelete(inv._id)}
+                  />
+                  <ArrowPathIcon
+                    className="size-7 cursor-pointer circle"
+                    onClick={() => resendInvitation(inv._id, dispatch)}
                   />
                 </div>
               </td>
@@ -66,7 +86,9 @@ export default function InvTable() {
           <div key={inv._id} className="pt-3 flex flex-col gap-3">
             <div className="flex items-center px-4">
               <span className="flex-1 font-bold">Role</span>
-              <span className="text-gray-400 flex-1">{inv.isSubAdmin ? "Admin" : inv.role}</span>
+              <span className="text-gray-400 flex-1">
+                {inv.isSubAdmin ? "Admin" : inv.role}
+              </span>
             </div>
             <div className="flex items-center px-4">
               <span className="flex-1 font-bold">Email</span>
@@ -93,17 +115,19 @@ export default function InvTable() {
   return (
     <div>
       {tableComponent()}
-      {isDeleteOpen && <DeletePopup
-        status={isDeleteOpen}
-        onDelete={() => {
-          deleteInvitation(selectedInvitationId, dispatch);
-        }}
-        title={"Are you sure you want to delete this invitation?"}
-        closePopup={() => {
-          setIsDeleteOpen(false);
-          setSelectedInvitationId(null);
-        }}
-      />}
+      {isDeleteOpen && (
+        <DeletePopup
+          status={isDeleteOpen}
+          onDelete={() => {
+            deleteInvitation(selectedInvitationId, dispatch);
+          }}
+          title={"Are you sure you want to delete this invitation?"}
+          closePopup={() => {
+            setIsDeleteOpen(false);
+            setSelectedInvitationId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

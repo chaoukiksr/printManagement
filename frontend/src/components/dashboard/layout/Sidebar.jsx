@@ -57,7 +57,7 @@ export default function Sidebar() {
               <span className="font-bold lg:block md:hidden sm:block">Request</span>
             </div>
           </Link>
-          <Link href={"#"} prefetch={true}>
+          <Link href={"/admin/statistics"} prefetch={true}>
             <div
               className={`flex items-center gap-3 my-4 ${
                 pathname !== "/admin/statistics" && "text-gray-400"

@@ -5,10 +5,7 @@ export const useOutsideClick = (ref, callback) => {
     function handleClickOutside(event) {
       // Check if the click is outside the popup content
       if (ref.current && !ref.current.contains(event.target)) {
-        // Only trigger if the click is on the popup overlay
-        if (event.target.classList.contains('popup')) {
           callback();
-        }
       }
     }
 

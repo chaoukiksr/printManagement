@@ -13,7 +13,6 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeletePopup from "@/components/dashboard/popups/DeletePopup";
 
-
 export default function ReqItem({ item }) {
   const { role } = useSelector((state) => state.auth);
   const pathname = usePathname();
@@ -34,15 +33,19 @@ export default function ReqItem({ item }) {
   return (
     <>
       <tr
-        className={`bg-white border-t border-gray-300  transition-all duration-100 ${
-          pathname !== "/admin" && role !== "admin" && "hover:scale-101 cursor-pointer"
+        className={`bg-white border-t border-gray-300 transition-all duration-300 hover:bg-gray-50 group ${
+          pathname !== "/admin" && role !== "admin" && "cursor-pointer"
         }`}
         onClick={handleRequestClick}
       >
         {(role === "admin" || role === "printer") && (
-          <td>{item.departmentName}</td>
+          <td className="p-4">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-gray-700">{item.departmentName}</span>
+            </div>
+          </td>
         )}
-        <td>
+        <td className="p-4">
           {role === "teacher" ? (
             <>{item.createdAt.split("T")[0]}</>
           ) : (
@@ -51,44 +54,49 @@ export default function ReqItem({ item }) {
                 <Image
                   src={item.user.image || "/assets/default-avatar.jpg"}
                   alt=""
-                  className="border-black w-[30px] h-[30px] rounded-full"
+                  className="border-black w-[30px] h-[30px] rounded-full transition-transform duration-300 group-hover:scale-110"
                   width={40}
                   height={40}
                 />
               </div>
-              <div className="username">{item.user.name}</div>
+              <div className="username font-medium text-gray-700">{item.user.name}</div>
             </div>
           )}
         </td>
-        <td>
+        <td className="p-4">
           <div className="flex items-center gap-3">
-            <DocumentIcon className="size-6" />
-            <span>{item.type}</span>
+            <DocumentIcon className="size-6 text-primary transition-transform duration-300 group-hover:scale-110" />
+            <span className="font-medium text-gray-700">{item.type}</span>
           </div>
         </td>
-        <td>{item.quantity} Pages</td>
-        <td>
-          <div className={`${item.status} flex items-center`}>
-            <li></li> {item.status.replace(/_/g, " ")}
+        <td className="p-4">
+          <span className="font-medium text-gray-700">{item.quantity} Pages</span>
+        </td>
+        <td className="p-4">
+          <div className={`${item.status} flex items-center gap-2 transition-all duration-300 group-hover:scale-105`}>
+            <li></li> 
+            <span className="font-medium">{item.status.replace(/_/g, " ")}</span>
           </div>
         </td>
         {role !== "admin" && (
-          <td className="action-buttons flex items-center gap-2">
-            <AdjustmentsVerticalIcon 
-              className="size-7 cursor-pointer circle" 
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`${pathname}?mode=view&id=${item._id}`);
-              }}
-            />
-            {role === "teacher" && (
-              <TrashIcon
-                className="size-7 cursor-pointer circle"
-                onClick={() => {
-                  setIsDeleting(true);
+          <td className="p-4 action-buttons">
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <AdjustmentsVerticalIcon 
+                className="size-7 cursor-pointer circle hover:text-primary transition-colors duration-300" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`${pathname}?mode=view&id=${item._id}`);
                 }}
               />
-            )}
+              {role === "teacher" && (
+                <TrashIcon
+                  className="size-7 cursor-pointer circle hover:text-red-500 transition-colors duration-300"
+                  onClick={() => {
+                    setIsDeleting(true);
+                  }}
+                />
+              )}
+            </div>
           </td>
         )}
       </tr>

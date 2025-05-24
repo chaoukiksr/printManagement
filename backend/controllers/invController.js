@@ -189,3 +189,54 @@ export const deleteInvitation = async (req, res) => {
     });
   }
 };
+
+// Resend invitation
+export const resendInvitation = async (req, res) => {
+  try {
+    const { invitationId } = req.params;
+
+    const invitation = await Invitation.findById(invitationId);
+    if (!invitation) {
+      return res.status(404).json({
+        success: false,
+        message: "Invitation not found"
+      });
+    }
+
+    // Get entity name for email
+    let entityName;
+    if (invitation.role === "teacher") {
+      const department = await Department.findById(invitation.from);
+      entityName = department.name;
+    } else {
+      const faculty = await Faculty.findById(invitation.from);
+      entityName = faculty.name;
+    }
+
+    const invitationLink = `${process.env.CLIENT_URL}/register?token=${invitation.invitationLink}&role=${invitation.role}&email=${invitation.email}&isSubAdmin=${invitation.isSubAdmin}`;
+
+    // Send invitation email
+    await emailSender({
+      email: invitation.email,
+      subject: `${invitation.role.charAt(0).toUpperCase() + invitation.role.slice(1)} Invitation - Print Management System`,
+      html: createInvitationTemplate(invitation.role, entityName, invitationLink)
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Invitation resent successfully",
+      data: {
+        email: invitation.email,
+        role: invitation.role,
+        entity: entityName
+      }
+    });
+  } catch (error) {
+    console.error("Resend invitation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error resending invitation",
+      error: error.message
+    });
+  }
+};
