@@ -28,7 +28,7 @@ export default function RequestTrendChart() {
   }));
 
   return (
-    <div className="trend-chart flex-1 bg-white rounded-2xl shadow md:p-4 m-4">
+    <div className="trend-chart flex-1 rounded-2xl shadow md:p-4 m-4">
       <div className="head flex items-center gap-3 mb-6">
         <ChartBarIcon className="size-6" />
         <span className="font-semibold">Request Trends</span>

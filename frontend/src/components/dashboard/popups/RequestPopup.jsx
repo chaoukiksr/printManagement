@@ -6,11 +6,12 @@ import { useEffect, useRef, useState } from "react";
 import ReqForm from "@/components/dashboard/ReqForm";
 import { stopScroll } from "@/utils/stopScroll";
 import { useDispatch, useSelector } from "react-redux";
-import { getRequestDetails } from "@/store/request/requestHandler";
+import { getRequestDetails, getRequests } from "@/store/request/requestHandler";
+import { requests } from "@/testdata";
 
 export default function RequestPopup() {
   const { role } = useSelector((state) => state.auth);
-  const { selectedRequest } = useSelector((state) => state.request);
+  const { selectedRequest , requests} = useSelector((state) => state.request);
   const router = useRouter();
   const dispatch = useDispatch();
   const popupRef = useRef(null);
@@ -43,19 +44,24 @@ export default function RequestPopup() {
   // Handle popup visibility
   useEffect(() => {
     if (mode === 'view' && requestId) {
-      dispatch(getRequestDetails(requestId));
+      if(requests){
+        dispatch(getRequestDetails(requestId));
+      }else{
+        dispatch(getRequests());
+      }
+
       setIsOpen(true);
     } else if (mode === 'create') {
       setIsOpen(true);
     } else {
       setIsOpen(false);
     }
-  }, [mode, requestId, dispatch]);
+  }, [mode, requestId, dispatch, requests]);
 
   if (!isOpen || !mode) return null;
   return (
     <div className="popup">
-      <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
+      <div className="popup-content md:w-[600px] w-[90%]" ref={popupRef}>
         <h3 className="font-bold text-xl">
           {mode === 'create' ? 'Create New Request' : 'Request Information'}
         </h3>

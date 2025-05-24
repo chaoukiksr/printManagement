@@ -45,7 +45,7 @@ export default function DeletePopup({ status , onDelete , title , closePopup}) {
   if (!status) return null;
   return (
     <div className="popup">
-      <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
+      <div className="popup-content md:w-[600px] w-[90%]" ref={popupRef}>
         <h3 className="text-xl font-bold text-center mb-7">
           {title || `Do you want to delete this ${role ? role.charAt(0).toUpperCase() + role.slice(1) : 'item'}?`}
         </h3>

@@ -163,12 +163,12 @@ export default function Profile() {
                   >
                     {isEditing ? (
                       <>
-                        <XMarkIcon className="w-5 h-5" />
+                        <XMarkIcon className="w-7 h-5" />
                         Cancel
                       </>
                     ) : (
                       <>
-                        <PencilIcon className="w-5 h-5" />
+                        <PencilIcon className="w-7 h-5" />
                         Edit Profile
                       </>
                     )}

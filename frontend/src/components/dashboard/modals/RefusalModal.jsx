@@ -35,7 +35,7 @@ export default function RefusalModal({ isOpen, onClose, onConfirm, isFetching })
 
   return (
     <div className="popup">
-      <div className="popup-content md:w-[500px] w-[80%]">
+      <div className="popup-content md:w-[500px] w-[90%]">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-xl">Refuse Request</h3>
           <button

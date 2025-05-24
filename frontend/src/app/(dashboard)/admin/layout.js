@@ -10,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClientLayout>
-      <div className="min-h-screen">
+      <div>
         <Navbar />
         <div className="flex">
           <div

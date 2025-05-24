@@ -51,7 +51,7 @@ export default function UserCreation({ status, closePopup, role }) {
 
   return (
     <div className={`popup`}>
-      <div className="popup-content md:w-[600px] w-[80%]" ref={popupRef}>
+      <div className="popup-content md:w-[600px] w-[90%]" ref={popupRef}>
         <h3 className="text-xl font-bold text-center mb-7">
           <span style={{ textTransform: "capitalize" }}>{role === "department" ? "Admin" : role}</span> creation
         </h3>
