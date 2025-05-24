@@ -45,15 +45,15 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="cta flex mt-[80px] gap-3 items-center justify-center flex-wrap"
+          className="cta flex flex-col md:flex-row mt-[80px] gap-3 items-center justify-center"
         >
-          <Link href={"/register"}>
-            <button className="btn grow sm:grow-0">
+          <Link href={"/register"} className="w-full md:w-auto">
+            <button className="btn w-full">
               Sign Up For new Adiministration
             </button>
           </Link>
-          <Link href={"/login"}>
-            <button className="btn-outline grow sm:grow-0">Log In</button>
+          <Link href={"/login"} className="w-full md:w-auto">
+            <button className="btn-outline w-full">Log In</button>
           </Link>
         </motion.div>
       </motion.div>

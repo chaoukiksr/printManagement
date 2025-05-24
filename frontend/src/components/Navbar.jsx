@@ -31,6 +31,10 @@ export default function Navbar() {
     else document.body.style.overflow = "";
   }, [isOpen]);
 
+  useEffect(()=>{
+    setIsOpen(false);
+  },[pathname]);
+
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/teacher") ||
