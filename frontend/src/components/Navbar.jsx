@@ -83,7 +83,7 @@ export default function Navbar() {
 
       <div className="items-center justify-between md:hidden flex">
         <Link href={"/"}>
-          <h3 className="text-2xl font-bold">Name</h3>
+          <Image src={"/logo.png"} alt="logo" width={70} height={70}/>
         </Link>
         {pathname === "/login" || pathname === "/register" ? (
           LogQuestion()

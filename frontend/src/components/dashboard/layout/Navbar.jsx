@@ -223,7 +223,7 @@ export default function Navbar() {
           <div className="md:hidden z-50">
             <div className="flex items-center justify-between z-50">
               <Link href={"/"}>
-                <h3 className="text-2xl font-bold">Name</h3>
+                <Image src={"/logo.png"} alt="logo" width={70} height={70} />
               </Link>
               <div className="flex items-center gap-4">
                 {role === "department" && (
@@ -268,7 +268,7 @@ export default function Navbar() {
           className={`sidebar fixed top-[60px] transition-all duration-300 ${
             isOpen ? "right-0" : "-right-[300px]"
           } p-5 py-5 w-[271px] shadow-2xl z-40 bg-white overflow-y-auto`}
-          style={{ height: "calc(100vh - 60px)" }}
+          style={{ height: "calc(100dvh - 60px)" }}
         >
           <div className="content flex flex-col justify-between h-full">
             <div className="navigations">

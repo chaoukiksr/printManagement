@@ -142,8 +142,8 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="register-page flex items-center justify-center h-[90vh] my-12">
-      <div className="content bg-white shadow-2xl rounded-[20px] p-[30px] min-w-[360px]">
+    <div className="register-page flex items-center min-h-[90dvh] justify-center py-12">
+      <div className="content bg-white shadow-2xl rounded-[20px] p-[30px] w-[90%] sm:w-auto">
         <h3 className="text-2xl text-center font-bold">Sign Up</h3>
         <p className="text-center text-gray-400">
           Enter you information below to create an account .

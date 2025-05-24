@@ -28,20 +28,20 @@ export default function RequestTrendChart() {
   }));
 
   return (
-    <div className="trend-chart flex-1 bg-white rounded-2xl shadow p-4 m-4">
+    <div className="trend-chart flex-1 bg-white rounded-2xl shadow md:p-4 m-4">
       <div className="head flex items-center gap-3 mb-6">
         <ChartBarIcon className="size-6" />
         <span className="font-semibold">Request Trends</span>
       </div>
 
-      <div className="w-full h-[350px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-[350px] overflow-hidden">
+        <ResponsiveContainer width="100%" height="100%" className={'overflow-auto'} >
           <LineChart
             data={chartData}
             margin={{
               top: 20,
-              right: 30,
-              left: 20,
+              right: -20,
+              left: -20,
               bottom: 5,
             }}
           >

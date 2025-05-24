@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <div className="home-page container mx-auto px-[30px]">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -19,7 +19,7 @@ export default function Home() {
         >
           Are You Ready To Create your print managment system?
         </motion.p>
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
@@ -30,7 +30,7 @@ export default function Home() {
           </span>{" "}
           Easy Requests, Clear Tracking, Full Control
         </motion.h1>
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
@@ -41,18 +41,20 @@ export default function Home() {
           experience across campus.
         </motion.p>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
           className="cta flex mt-[80px] gap-3 items-center justify-center flex-wrap"
         >
-          <button className="btn grow sm:grow-0">
-            <Link href={"/register"}>Sign Up For new Adiministration</Link>
-          </button>
-          <button className="btn-outline grow sm:grow-0">
-            <Link href={"/login"}>Log In</Link>
-          </button>
+          <Link href={"/register"}>
+            <button className="btn grow sm:grow-0">
+              Sign Up For new Adiministration
+            </button>
+          </Link>
+          <Link href={"/login"}>
+            <button className="btn-outline grow sm:grow-0">Log In</button>
+          </Link>
         </motion.div>
       </motion.div>
 

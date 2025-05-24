@@ -40,7 +40,7 @@ export default function StatisticsPage() {
           </p>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
-          <PriceConfig />
+          {role === "admin" && <PriceConfig />}
           <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border border-gray-100">
             {timeRanges.map((tr) => (
               <button

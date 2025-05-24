@@ -137,6 +137,7 @@ button {
   outline: none;
   border: none;
   flex-grow: 1;
+  width: 100%;
 }
 
 .sidebar {

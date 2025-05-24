@@ -117,7 +117,7 @@ export default function PaperChart() {
           <h3 className="text-3xl font-bold text-primary">
             {formatCurrency(avgCost)} <span className="text-lg font-medium">DA</span>
           </h3>
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-600 hidden md:block">
             <p>Avg Print Cost: {formatCurrency(avgPrintCost)} DA</p>
             <p>Avg Paper Cost: {formatCurrency(avgPaperCost)} DA</p>
           </div>
@@ -127,14 +127,14 @@ export default function PaperChart() {
         </div>
       </div>
 
-      <div className="w-full">
-        <ChartContainer config={chartConfig} className={'max-h-[350px] w-full'}>
+      <div className="w-full overflow-hidden">
+        <ChartContainer config={chartConfig} className={'max-h-[350px] w-full overflow-auto'}>
           <AreaChart
             data={chartData}
             margin={{
               top: 10,
-              right: 30,
-              left: 0,
+              right: 0,
+              left: -20,
               bottom: 0,
             }}
           >
