@@ -4,6 +4,10 @@ import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+// Configure axios defaults
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
 // Register new user
 export const register = async (userData) => {
   try {
@@ -28,9 +32,7 @@ export const verifyOTP = async (otpData) => {
 export const login = async (credentials, dispatch) => {
   try {
     dispatch(setIsFetching(true));
-    const response = await axios.post(`${API_URL}/auth/login`, credentials, {
-      withCredentials: true,
-    });
+    const response = await axios.post(`${API_URL}/auth/login`, credentials);
 
     if (response.data.success && response.data.isVerified) {
       dispatch(setUser(response.data.data));
@@ -49,13 +51,7 @@ export const login = async (credentials, dispatch) => {
 export const logout = async (dispatch) => {
   try {
     dispatch(setIsFetching(true));
-    const response = await axios.post(
-      `${API_URL}/auth/logout`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.post(`${API_URL}/auth/logout`);
 
     if (response.data.success) {
       dispatch(setUser(null));
@@ -74,9 +70,7 @@ export const logout = async (dispatch) => {
 export const checkAuth = async (dispatch) => {
   try {
     dispatch(setIsFetching(true));
-    const response = await axios.get(`${API_URL}/auth/check`, {
-      withCredentials: true,
-    });
+    const response = await axios.get(`${API_URL}/auth/check`);
 
     if (response.data.success) {
       dispatch(setUser(response.data.data));
@@ -91,7 +85,6 @@ export const checkAuth = async (dispatch) => {
     dispatch(setIsFetching(false));
   }
 };
-
 
 // Verify invitation and register
 export const verifyInvitation = async (invitationData, dispatch) => {

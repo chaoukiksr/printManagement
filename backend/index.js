@@ -30,9 +30,13 @@ const app = express();
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(cookieParser()); // Parse cookies
+
+// CORS configuration
 app.use(cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
 // Serve static files from uploads directory
@@ -55,18 +59,18 @@ app.use(session({
         autoRemove: "native" // Use MongoDB's TTL index
     }),
     cookie: {
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production", // true in production
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: "lax" // Protects against CSRF
-    }
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'none' in production
+        domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : undefined
+    },
+    proxy: process.env.NODE_ENV === "production" // true in production
 }));
 
 // Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 
 // Routes
 import authRoutes from "./routes/auth.js";
@@ -82,7 +86,6 @@ app.use("/api/department", departmentRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/print", printRequestRoutes);
 app.use("/api/statistics", statisticsRoutes);
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {
