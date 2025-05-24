@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeletePopup from "@/components/dashboard/popups/DeletePopup";
-import moment from 'moment';
+import moment from "moment";
 import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function InvTable() {
@@ -42,7 +42,7 @@ export default function InvTable() {
   }
 
   const tableComponent = () => (
-    <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
+    <div className="border border-gray-300 rounded-lg m-1 md:m-4 shadow-2xl">
       <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden hidden md:table">
         <thead className="bg-(--white-blue) w-full ">
           <tr>
@@ -60,19 +60,23 @@ export default function InvTable() {
               <td className="p-4">{inv.isSubAdmin ? "Admin" : inv.role}</td>
               <td className="p-4">{inv.email}</td>
               <td className="p-4">
-                <span title={moment(inv.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}>
+                <span
+                  title={moment(inv.updatedAt).format(
+                    "MMMM Do YYYY, h:mm:ss a"
+                  )}
+                >
                   {moment(inv.updatedAt).fromNow()}
                 </span>
               </td>
               <td className="p-4">
                 <div className="flex items-center gap-2">
-                  <TrashIcon
-                    className="size-7 cursor-pointer circle"
-                    onClick={() => handleDelete(inv._id)}
-                  />
                   <ArrowPathIcon
                     className="size-7 cursor-pointer circle"
                     onClick={() => resendInvitation(inv._id, dispatch)}
+                  />
+                  <TrashIcon
+                    className="size-7 cursor-pointer circle"
+                    onClick={() => handleDelete(inv._id)}
                   />
                 </div>
               </td>
@@ -98,7 +102,11 @@ export default function InvTable() {
                 <span className="text-gray-400">{inv.email}</span>
               </div>
             </div>
-            <div className="flex items-center justify-end px-4 py-2">
+            <div className="flex items-center justify-end gap-2 px-4 py-2">
+              <ArrowPathIcon
+                className="size-7 cursor-pointer circle"
+                onClick={() => resendInvitation(inv._id, dispatch)}
+              />
               <TrashIcon
                 className="size-7 cursor-pointer circle"
                 onClick={() => handleDelete(inv._id)}

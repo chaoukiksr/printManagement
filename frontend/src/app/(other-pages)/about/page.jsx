@@ -55,12 +55,12 @@ export default function About() {
     {
       name: "Laidi Othman",
       role: "UI/UX Designer",
-      email: ""
+      email: "othmanlaiidi@gmail.com"
     },
     {
       name: "Anes Rouissat",
       role: "UI/UX Designer",
-      email: ""
+      email: "anesrouissat@gmail.com"
     },
     {
       name: "Bour Youcef",

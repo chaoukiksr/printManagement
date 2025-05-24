@@ -50,12 +50,12 @@ export default function page() {
 
       {activeTab === "accounts" ? (
         <>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap gap-3 items-center justify-between mb-4">
             <h3 className="text-xl md:text-3xl font-bold">
               {role === "admin" ? "Departments" : "Teachers"}
             </h3>
             <button
-              className="btn flex items-center gap-3"
+              className="btn flex items-center gap-3 w-full md:w-auto"
               onClick={() =>
                 role === "admin"
                   ? setPopupStatus((prev) => ({ ...prev, dep: true }))
@@ -71,10 +71,10 @@ export default function page() {
 
           {role === "admin" && (
             <>
-              <div className="flex items-center justify-between my-4">
+              <div className="flex flex-wrap gap-3 items-center justify-between my-4">
                 <h3 className="text-xl md:text-3xl font-bold">Printer</h3>
                 <button
-                  className={`btn-outline flex items-center gap-3 ${
+                  className={`btn-outline flex items-center gap-3 w-full md:w-auto ${
                     printers && printers.length === 1
                       ? "opacity-40 pointer-events-none"
                       : ""
@@ -93,10 +93,10 @@ export default function page() {
             </>
           )}
 
-          <div className="flex items-center justify-between my-4">
+          <div className="flex flex-wrap gap-3 items-center justify-between my-4">
             <h3 className="text-xl md:text-3xl font-bold">Admins</h3>
             <button
-              className={`btn-outline flex items-center gap-3`}
+              className={`btn-outline flex items-center gap-3 w-full md:w-auto`}
               onClick={() =>
                 setPopupStatus((prev) => ({ ...prev, admin: true }))
               }

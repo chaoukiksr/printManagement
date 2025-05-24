@@ -47,7 +47,7 @@ export default function DepTable() {
   if (departments && departments.length === 0) return <div className="text-center text-gray-400">There is no admin in your system</div>;
 
   const tableComponent = () => (
-    <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
+    <div className="border border-gray-300 rounded-lg m-1 md:m-4 shadow-2xl">
       <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden hidden md:table">
         <thead className="bg-(--white-blue) ">
           <tr>
@@ -96,7 +96,6 @@ export default function DepTable() {
             <div className="flex items-center px-4">
               <span className="flex-1 font-bold">Leader</span>
               <div className="account flex-1 flex items-center gap-2">
-                <UserCircleIcon className="size-6" />
                 <div className="username">{dep.isRegistered ? dep.chefName : "Not registered"}</div>
               </div>
             </div>

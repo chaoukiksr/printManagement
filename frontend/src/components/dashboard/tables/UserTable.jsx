@@ -82,7 +82,7 @@ export default function UserTable({ role }) {
   }
 
   const tableComponent = () => (
-    <div className="border border-gray-300 rounded-lg m-4 shadow-2xl">
+    <div className="border border-gray-300 rounded-lg m-1 md:m-4 shadow-2xl">
       <table className="shadow-md rounded-[10px] w-full border border-(--borders) bg-white overflow-hidden hidden md:table">
         <thead className="bg-(--white-blue) w-full ">
           <tr>
@@ -116,8 +116,7 @@ export default function UserTable({ role }) {
           <div key={user._id} className="pt-3 flex flex-col gap-3">
             <div className="flex items-center px-4">
               <span className="flex-1 font-bold">Name</span>
-              <div className="account flex-1 flex items-center gap-2">
-                <UserCircleIcon className="size-6" />
+              <div className="account flex-1">
                 <div className="username">{user.username}</div>
               </div>
             </div>

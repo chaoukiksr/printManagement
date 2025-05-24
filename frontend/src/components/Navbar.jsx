@@ -1,13 +1,18 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { useOutsideClick } from "@/utils/outSideClick";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const sideRef = useRef(null);
+
+  useOutsideClick(sideRef, () => setIsOpen(false));
 
   const LogQuestion = () => {
     return (
@@ -31,9 +36,9 @@ export default function Navbar() {
     else document.body.style.overflow = "";
   }, [isOpen]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsOpen(false);
-  },[pathname]);
+  }, [pathname]);
 
   if (
     pathname.startsWith("/admin") ||
@@ -46,7 +51,7 @@ export default function Navbar() {
     <div className="navbar sticky top-0 lg:container shadow-lg m-auto bg-white px-[20px] lg:px-[40px] py-[10px] lg:rounded-b-[20px] z-50">
       <div className="items-center justify-between hidden md:flex">
         <Link href={"/"}>
-          <Image src={"/logo.png"} alt="logo" width={90} height={90}/>
+          <Image src={"/logo.png"} alt="logo" width={90} height={90} />
         </Link>
         {pathname === "/login" || pathname === "/register" ? (
           LogQuestion()
@@ -87,22 +92,30 @@ export default function Navbar() {
 
       <div className="items-center justify-between md:hidden flex">
         <Link href={"/"}>
-          <Image src={"/logo.png"} alt="logo" width={70} height={70}/>
+          <Image src={"/logo.png"} alt="logo" width={70} height={70} />
         </Link>
         {pathname === "/login" || pathname === "/register" ? (
           LogQuestion()
         ) : (
           <>
-            <Bars3BottomLeftIcon
-              className="size-10 cursor-pointer"
-              onClick={() => setIsOpen(!isOpen)}
-            />
+            {isOpen ? (
+              <XMarkIcon
+                className="size-10 cursor-pointer"
+                onClick={() => setIsOpen(!isOpen)}
+              />
+            ) : (
+              <Bars3BottomLeftIcon
+                className="size-10 cursor-pointer"
+                onClick={() => setIsOpen(!isOpen)}
+              />
+            )}
 
             <div
               className={`sidenav absolute  flex flex-col items-start  bg-white end-0 top-[60px] shadow-lg w-[0px] ${
                 isOpen && "w-[260px] p-5"
               } overflow-hidden`}
               style={{ height: "calc(100vh - 60px)", transition: "width 0.3s" }}
+              ref={sideRef}
             >
               <div className={`navigators flex flex-col items-center gap-5 `}>
                 <Link
