@@ -1,10 +1,15 @@
-import OtpVerification from '@/components/auth/OtpVerification'
-import React from 'react'
+import OtpVerification from "@/components/auth/OtpVerification";
+import FullPageLoader from "@/components/common/FullPageLoader";
+import React, { Suspense } from "react";
 
 export const metadata = {
-    title : "OTP Verification",
-}
+  title: "OTP Verification",
+};
 
 export default function VerifyPage() {
-  return <OtpVerification />
+  return (
+    <Suspense fallback={<FullPageLoader />}>
+      <OtpVerification />
+    </Suspense>
+  );
 }
