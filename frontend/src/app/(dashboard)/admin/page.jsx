@@ -42,7 +42,7 @@ export default function Home() {
             btn={
               role === "admin" ? `Create new department` : `Invite new teacher`
             }
-            img={"/assets/dep.png"}
+            img={role === "admin" ? "/assets/dep.png" : "/assets/teacher.png"}
             action={() =>
               setShowPopup({
                 ...showPopup,
@@ -58,7 +58,7 @@ export default function Home() {
             }
             btnClass={"btn-outline"}
             btn={role === "admin" ? `Create new printer` : `Invite new admin`}
-            img={"/assets/print.png"}
+            img={role === "admin" ? "/assets/print.png" : "/assets/admin.png"}
             action={() =>
               setShowPopup({
                 ...showPopup,
