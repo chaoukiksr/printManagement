@@ -3,11 +3,58 @@
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/auth/authSlice";
-import { CameraIcon, PencilIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, PencilIcon, CheckIcon, XMarkIcon, EyeIcon, EyeSlashIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ButtonLoader from "../ui/ButtonLoader";
+
+const PasswordStrengthIndicator = ({ password }) => {
+  const getStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+  };
+
+  const strength = getStrength(password);
+  const strengthText = ['Very Weak', 'Weak', 'Medium', 'Strong', 'Very Strong'];
+  const strengthColor = ['red', 'orange', 'yellow', 'lime', 'green'];
+
+  return (
+    <div className="mt-1">
+      <div className="flex gap-1 h-1">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className={`flex-1 rounded-full transition-all duration-300 ${
+              i < strength ? `bg-${strengthColor[strength - 1]}-500` : 'bg-gray-200'
+            }`}
+          />
+        ))}
+      </div>
+      {password && (
+        <p className={`text-sm mt-1 text-${strengthColor[strength - 1]}-500`}>
+          {strengthText[strength - 1]}
+        </p>
+      )}
+    </div>
+  );
+};
+
+const PasswordRequirement = ({ met, text }) => (
+  <div className="flex items-center gap-2 text-sm">
+    {met ? (
+      <CheckCircleIcon className="size-4 text-green-500" />
+    ) : (
+      <XCircleIcon className="size-4 text-gray-300" />
+    )}
+    <span className={met ? "text-gray-700" : "text-gray-400"}>{text}</span>
+  </div>
+);
 
 export default function Profile() {
   const { user } = useSelector((state) => state.auth);
@@ -22,6 +69,21 @@ export default function Profile() {
   });
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
+  const [showRequirements, setShowRequirements] = useState(false);
+  const [passType1, setPassType1] = useState("password");
+  const [passType2, setPassType2] = useState("password");
+  const [passType3, setPassType3] = useState("password");
+
+  const validatePassword = (password) => {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[^A-Za-z0-9]/.test(password),
+    };
+    return Object.values(requirements).every(Boolean);
+  };
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -54,9 +116,16 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      toast.error("New passwords don't match");
-      return;
+    if (formData.newPassword) {
+      if (!validatePassword(formData.newPassword)) {
+        toast.error("New password does not meet all requirements");
+        return;
+      }
+      
+      if (formData.newPassword !== formData.confirmPassword) {
+        toast.error("New passwords don't match");
+        return;
+      }
     }
 
     try {
@@ -221,12 +290,23 @@ export default function Profile() {
                           </label>
                           <div className="input group-hover:border-primary transition-colors">
                             <input
-                              type="password"
+                              type={passType1}
                               name="currentPassword"
                               value={formData.currentPassword}
                               onChange={handleChange}
                               className="w-full bg-transparent"
                             />
+                            {passType1 === "password" ? (
+                              <EyeIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType1("text")}
+                              />
+                            ) : (
+                              <EyeSlashIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType1("password")}
+                              />
+                            )}
                           </div>
                         </div>
 
@@ -236,13 +316,50 @@ export default function Profile() {
                           </label>
                           <div className="input group-hover:border-primary transition-colors">
                             <input
-                              type="password"
+                              type={passType2}
                               name="newPassword"
                               value={formData.newPassword}
                               onChange={handleChange}
+                              onFocus={() => setShowRequirements(true)}
                               className="w-full bg-transparent"
                             />
+                            {passType2 === "password" ? (
+                              <EyeIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType2("text")}
+                              />
+                            ) : (
+                              <EyeSlashIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType2("password")}
+                              />
+                            )}
                           </div>
+                          <PasswordStrengthIndicator password={formData.newPassword} />
+                          {showRequirements && formData.newPassword && (
+                            <div className="mt-2 space-y-1">
+                              <PasswordRequirement
+                                met={formData.newPassword.length >= 8}
+                                text="At least 8 characters"
+                              />
+                              <PasswordRequirement
+                                met={/[A-Z]/.test(formData.newPassword)}
+                                text="At least one uppercase letter"
+                              />
+                              <PasswordRequirement
+                                met={/[a-z]/.test(formData.newPassword)}
+                                text="At least one lowercase letter"
+                              />
+                              <PasswordRequirement
+                                met={/[0-9]/.test(formData.newPassword)}
+                                text="At least one number"
+                              />
+                              <PasswordRequirement
+                                met={/[^A-Za-z0-9]/.test(formData.newPassword)}
+                                text="At least one special character"
+                              />
+                            </div>
+                          )}
                         </div>
 
                         <div className="field group md:col-span-2">
@@ -251,13 +368,39 @@ export default function Profile() {
                           </label>
                           <div className="input group-hover:border-primary transition-colors">
                             <input
-                              type="password"
+                              type={passType3}
                               name="confirmPassword"
                               value={formData.confirmPassword}
                               onChange={handleChange}
                               className="w-full bg-transparent"
                             />
+                            {passType3 === "password" ? (
+                              <EyeIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType3("text")}
+                              />
+                            ) : (
+                              <EyeSlashIcon
+                                className="size-6 cursor-pointer"
+                                onClick={() => setPassType3("password")}
+                              />
+                            )}
                           </div>
+                          {formData.confirmPassword && (
+                            <div className="mt-1">
+                              {formData.newPassword === formData.confirmPassword ? (
+                                <p className="text-sm text-green-500 flex items-center gap-1">
+                                  <CheckCircleIcon className="size-4" />
+                                  Passwords match
+                                </p>
+                              ) : (
+                                <p className="text-sm text-red-500 flex items-center gap-1">
+                                  <XCircleIcon className="size-4" />
+                                  Passwords do not match
+                                </p>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -270,6 +413,7 @@ export default function Profile() {
                         onClick={() => {
                           setIsEditing(false);
                           setPreviewImage(null);
+                          setShowRequirements(false);
                         }}
                         className="btn-gray hover:scale-105 transition-transform"
                       >
