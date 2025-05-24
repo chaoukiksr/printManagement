@@ -63,7 +63,6 @@ app.use(session({
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'none' in production
-        domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : undefined
     },
     proxy: process.env.NODE_ENV === "production" // true in production
 }));
