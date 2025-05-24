@@ -3,7 +3,7 @@
   "module": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "bun index.js",
     "dev": "nodemon index.js"
   },
   "devDependencies": {
