@@ -14,6 +14,7 @@ import Badge from "@/components/ui/Badge";
 import DepCreation from "@/components/dashboard/popups/DepCreation";
 import DeletePopup from "@/components/dashboard/popups/DeletePopup";
 import PrinterLoader from "@/components/ui/PrinterLoader";
+import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function DepTable() {
   const pathname = usePathname();
@@ -42,7 +43,7 @@ export default function DepTable() {
     setIsDeleteOpen(true);
   };
 
-  if (isFetching) return <PrinterLoader />;
+  if (isFetching) return <ButtonLoader />;
   if (departments && departments.length === 0) return <div className="text-center text-gray-400">There is no admin in your system</div>;
 
   const tableComponent = () => (

@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DeletePopup from "@/components/dashboard/popups/DeletePopup";
 import moment from 'moment';
+import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function InvTable() {
   const { invitations } = useSelector((state) => state.invitations);
@@ -30,7 +31,7 @@ export default function InvTable() {
     setSelectedInvitationId(invitationId);
   };
 
-  if (!invitations) return null;
+  if (!invitations) return <ButtonLoader />;
 
   if (invitations.length === 0) {
     return (

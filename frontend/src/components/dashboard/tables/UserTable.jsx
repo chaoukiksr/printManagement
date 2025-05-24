@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import DeletePopup from "../popups/DeletePopup";
+import ButtonLoader from "@/components/ui/ButtonLoader";
 
 export default function UserTable({ role }) {
   const dispatch = useDispatch();
@@ -67,7 +68,7 @@ export default function UserTable({ role }) {
   if (!users) {
     return (
       <div className="flex items-center justify-center my-5">
-        <p className="text-gray-400">Loading...</p>
+        <ButtonLoader />
       </div>
     );
   }
