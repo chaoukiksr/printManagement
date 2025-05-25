@@ -320,7 +320,7 @@ export default function ReqForm({ reqData, closePopup }) {
               <button
                 type="button"
                 className="approved flex-1 !py-4 min-w-[200px]"
-                onClick={() => handleStatusUpdate(file ? "wf_printer" : "wf_teacher")}
+                onClick={() => handleStatusUpdate(request.file ? "wf_printer" : "wf_teacher")}
                 disabled={isFetching}
               >
                 {isFetching ? <ButtonLoader /> : "Approve the request"}
