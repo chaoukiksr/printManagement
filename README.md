@@ -2,7 +2,7 @@
 
 A comprehensive web-based print management system designed for educational institutions to manage and track print requests between departments, teachers, and printing services.
 
-![Print Management System Overview](/assets/overview.png)
+![Print Management System Overview](/frontend/public/assets/overview.png)
 
 ## Features
 
