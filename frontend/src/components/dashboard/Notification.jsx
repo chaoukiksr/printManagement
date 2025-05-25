@@ -108,7 +108,7 @@ export default function Notification({ status }) {
                           <p className="text-gray-800">
                             New request from{" "}
                             <span className="font-semibold text-primary">
-                              {req.teacher}
+                              {req.user.name}
                             </span>
                           </p>
                         </div>
