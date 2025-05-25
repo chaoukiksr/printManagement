@@ -5,9 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 export default function OtpVerification() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
@@ -107,7 +109,7 @@ export default function OtpVerification() {
       const response = await verifyOTP({
         email,
         otp: otpString,
-      });
+      } , dispatch);
       if (response.success) {
         toast.success("Email verified! Redirecting to login...");
         router.push("/login");

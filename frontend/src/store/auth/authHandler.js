@@ -9,24 +9,31 @@ axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // Register new user
-export const register = async (userData) => {
+export const register = async (userData , dispatch) => {
   try {
+    dispatch(setIsFetching(true));
+    // Check if userData is an object and has the required properties
     const response = await axios.post(`${API_URL}/auth/register`, userData);
     return response.data;
   } catch (error) {
     toast.error(error.response?.data.message || "Registration failed");
     throw error.response?.data || { message: "Registration failed" };
+  }finally {  
+    dispatch(setIsFetching(false));
   }
 };
 
 // Verify OTP
-export const verifyOTP = async (otpData) => {
+export const verifyOTP = async (otpData, dispatch) => {
   try {
+    dispatch(setIsFetching(true));
     const response = await axios.post(`${API_URL}/auth/verify-otp`, otpData);
     return response.data;
   } catch (error) {
     toast.error(error.response?.data.message || "OTP verification failed");
     throw error.response?.data || { message: "OTP verification failed" };
+  } finally {
+    dispatch(setIsFetching(false));
   }
 };
 
