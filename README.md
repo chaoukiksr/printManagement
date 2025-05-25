@@ -2,6 +2,8 @@
 
 A comprehensive web-based print management system designed for educational institutions to manage and track print requests between departments, teachers, and printing services.
 
+![Print Management System Overview](/assets/overview.png)
+
 ## Features
 
 ### Authentication & Authorization
@@ -78,7 +80,7 @@ A comprehensive web-based print management system designed for educational insti
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/print-management.git
+git clone https://github.com/abdelali-01/printManagement.git
 cd print-management
 ```
 
@@ -102,8 +104,7 @@ PORT=5000
 MONGODB_URI=your_mongodb_uri
 SESSION_SECRET=your_session_secret
 CLIENT_URL=http://localhost:3000
-EMAIL_SERVICE=gmail
-EMAIL_USER=your_email
+EMAIL=your_email
 EMAIL_PASS=your_email_password
 ```
 
