@@ -14,6 +14,7 @@ export const register = async (userData) => {
     const response = await axios.post(`${API_URL}/auth/register`, userData);
     return response.data;
   } catch (error) {
+    toast.error(error.response?.data.message || "Registration failed");
     throw error.response?.data || { message: "Registration failed" };
   }
 };
@@ -24,6 +25,7 @@ export const verifyOTP = async (otpData) => {
     const response = await axios.post(`${API_URL}/auth/verify-otp`, otpData);
     return response.data;
   } catch (error) {
+    toast.error(error.response?.data.message || "OTP verification failed");
     throw error.response?.data || { message: "OTP verification failed" };
   }
 };

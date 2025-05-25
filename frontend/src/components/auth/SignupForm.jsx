@@ -125,7 +125,8 @@ export default function SignupForm() {
     if (!token) {
       // register the user
       const res = await register(user);
-      if (res.data.succees) {
+      console.log(res);
+      if (res.success) {
         toast.success("You have successfully created an account");
         router.push("/login");
       }
